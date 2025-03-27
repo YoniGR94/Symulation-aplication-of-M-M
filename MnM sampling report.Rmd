@@ -44,9 +44,9 @@ av_per_color= n_unit/n_color
 paste0("The avarage lentils per color is ", round(av_per_color,2))
 ```
 
-# creating of sample
+# Creating of Sample
 
-## general sample
+## General Sample
 
 create_bag is a function to create one snack package as matrix.
 
@@ -80,7 +80,7 @@ sample_MnM<-function(nn,x_units,t_colors)
 }
 ```
 
-## preview graph
+## Preview Graph
 
 now will be creating nn bugs of M&M
 
@@ -100,7 +100,8 @@ MnM_sample %>% head(6)
 MnM_sample$low_col %>% table()
 ```
 
-ggplot the MnM_sample sample:
+ggplot the MnM sample sample
+
 ```{r ggplot 1 sample, warning=FALSE, error=FALSE}
 #check how many evens there are
 MnM_sample$even_count %>% 
@@ -128,7 +129,7 @@ MnM_sample$V6 %>% summary()
   rename("Var" ="sapply(MnM_sample[, 1:6], var, na.rm = 1)")
 ```
 
-## test expected value
+## Test Expected Value
 to see is the mu of the lentils per color are fair, we will test it per column with t.test.
 
 ```{r t test mu}
@@ -181,7 +182,8 @@ MnM_sample %>%
 
 ```
 
-we can see that the variance distribution is Gamma like with shape and rate as seen below:
+we can see that the variance distribution is Gamma like with shape and rate as seen below
+
 ```{r, warning=FALSE, error=FALSE}
 # הערכת הפרמטרים של התפלגות גמא
 gamma_params <- fitdistr(MnM_sample$var_col, "gamma")$estimate
