@@ -1,6 +1,8 @@
 # Symulation-aplication-of-M-M
 
-🍬 M&M Package Simulation
+🍫🍬 M&M Package Simulation
+
+🔴🟡🟠🟢🔵🟤
 
 This repository contains a data simulation of M&M packages, analyzing the distribution of colors and various statistical properties.
 
@@ -28,7 +30,8 @@ The goal is to explore simulation creation and identify potential biases or anom
 
 Clone the repository and run the analysis using R and ggplot2.
 
-required libraries:
+📚 required libraries
+
 ```
 library(ggplot2)
 library(dplyr)
