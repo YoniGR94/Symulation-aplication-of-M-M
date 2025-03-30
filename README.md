@@ -2,7 +2,9 @@
 
 🍬 M&M Package Simulation
 
-This repository contains a data simulation of M&M packages, analyzing the distribution of colors and various statistical properties. The goal is to explore randomness in packaging and identify potential biases or anomalies.
+This repository contains a data simulation of M&M packages, analyzing the distribution of colors and various statistical properties.
+
+The goal is to explore simulation creation and identify potential biases or anomalies.
 
 📂 What’s Inside?
 
@@ -16,7 +18,7 @@ This repository contains a data simulation of M&M packages, analyzing the distri
 
 🔍 Key Questions Explored
 
-1. Are colors evenly distributed in an M&M package?
+1. How evenly does colors distributed in an M&M package?
 
 2. What is the probability of getting less than half of a certain color?
 

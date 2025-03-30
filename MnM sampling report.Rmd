@@ -8,7 +8,7 @@ output:
     number_sections: true
 ---
 
-# intro
+# Intro
 
 The goal of this simulation is to test the statistics of M&M and other stacks even Chocolate lentils by color,
 I wanted to know, if I eat m&m package 2 by 2, separated by color, what is the chance of my finishing the package without mixing any color in one bite.
@@ -57,7 +57,7 @@ sample_MnM is a function to create n bags from the create_bag function.
 create_bag<- function(x,tx)
   {
   x<- floor(x)+sample(0:1,1)
-  res<- matrix(nrow = 1, ncol = tx) 
+  res<- matrix(nrow = 1, ncol = tx)
   colnames(res)<- 1:tx
   S_res<- sample(tx,x,replace = T)
   while(sum(table(S_res)>x))
@@ -82,12 +82,11 @@ sample_MnM<-function(nn,x_units,t_colors)
 
 ## Preview Graph
 
-now will be creating nn bugs of M&M
+Now will be creating nn bugs of M&M
 
 ```{r creating the bag, warning=FALSE, error=FALSE}
 MnM_sample<- sample_MnM(nn*100,n_unit,n_color)
 
-#check how much are even
 MnM_sample<-
   MnM_sample %>% as_data_frame() %>% 
   mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0)), #how many evens colors there are
@@ -96,14 +95,12 @@ MnM_sample<-
          low_col=   rowSums(across(-c(even_count, even_evens,var_col), ~ .x <= 0.6*av_per_color)))
 
 MnM_sample %>% head(6)
-
 MnM_sample$low_col %>% table()
 ```
 
 ggplot the MnM sample sample
 
 ```{r ggplot 1 sample, warning=FALSE, error=FALSE}
-#check how many evens there are
 MnM_sample$even_count %>% 
 table()
 
@@ -146,16 +143,14 @@ test_results <- sapply(columns_to_test, function(col) {
 
 t(t(test_results))
 ```
+
 ```{r}
 check_mean_hypothesis <- function(data, column_name, X) {
-  t.test(data[[column_name]], mu = X)$p.value
-}
+  t.test(data[[column_name]], mu = X)$p.value}
 
 check_two_sample_t_test <- function(data, col1, col2) {
-  t.test(data[[col1]], data[[col2]])$p.value
-}
+  t.test(data[[col1]], data[[col2]])$p.value}
 
-# יצירת מטריצה ריקה לשמירת התוצאות
 columns_to_test <- colnames(MnM_sample[,1:6])
 num_cols <- length(columns_to_test)
 p_value_matrix <- matrix(NA, nrow = num_cols, ncol = num_cols, dimnames = list(columns_to_test, columns_to_test))
@@ -179,7 +174,6 @@ MnM_sample %>%
     pivot_longer(cols = 1:6, names_to = "Variable", values_to = "pieces") %>%
     ggplot(aes(fill=Variable ,x= pieces, alpha= 0.4))+
   geom_histogram(position = "identity")
-
 ```
 
 we can see that the variance distribution is Gamma like with shape and rate as seen below
@@ -204,18 +198,17 @@ MnM_sample %>%
        y = "") +
   scale_y_continuous(label=scales::label_percent(.1)) + 
   theme_minimal()
-
 ```
 
 #check too low color (under 10%) and sample by n number
+
 #use statistics to sample better low chance cases
 
 # optimizing best package
 
 ### n*m types of snacks
 
-we will create a function that create sample for each number of colors and package size we want,
-and then calculate some interesting parameters
+We will create a function that create sample for each number of colors and package size we want, and then calculate some interesting parameters
 
 ```{r function multy-sample, warning=FALSE, error=FALSE}
 mega_snack<- function(nn,n_unit,n_color)
@@ -247,8 +240,6 @@ mega_snack<- function(nn,n_unit,n_color)
   }
 ```
 
-color: 2:7
-pieces per package: 9.1,45,100,200,500,1000
 
 ```{r baking multy sample, warning=FALSE, error=FALSE}
 color_op<- 2:7
@@ -312,5 +303,6 @@ mega_snack_1 %>%
   theme_minimal()
 ```
 
-as we can see, only the small package (less than 50 lentils) have high probability of at least one color to appear severely lower.
-therefore, splitting package by color on the big ones should be relatively even.
+As we can see, only the small package (less than 50 lentils) have high probability of at least one color to appear severely lower.
+
+Therefore, splitting package by color on the big ones should be relatively even.
