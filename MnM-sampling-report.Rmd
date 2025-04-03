@@ -96,20 +96,20 @@ MnM_sample<-
          Variance=    apply(across(c(1:6)), 1, var), #var of candy per color/ type
          low_col=    rowSums(across(c(1:6), ~ .x <= 0.6*av_per_color)),
          min=        apply(across(c(1:6)),1,FUN = min)) # lowest value in color
-
-MnM_sample %>% head(6)
 ```
 
-ggplot the MnM sample sample
+plot the MnM sample sample
 
 ```{r ggplot 1 sample, warning=FALSE, error=FALSE}
-MnM_sample$even_count %>% 
-table()
 
 MnM_sample %>% 
   mutate(is.even = even_count %%2 ==0) %>% 
   ggplot(aes(x= even_count, fill= is.even))+
-  geom_bar()
+  geom_bar()+
+    geom_text(
+    stat = "count",
+    aes(label = ..count..),vjust = -0.5
+  ) 
 
 MnM_sample %>%
   mutate(is.even = V1 %%2 ==0) %>% 
@@ -129,9 +129,11 @@ MnM_sample$V6 %>% summary()
 ```
 
 ## Test Expected Value
-to see is the mu of the lentils per color are fair, we will test it per column with t.test.
+to see is the mu of the lentils per color are fair, we will test it per column with t.test for each color.
 
-```{r t test mu}
+Here is the result, none of them bellow 5% P. value
+
+```{r t test mu, echo=FALSE}
 #test mu is av_per_color
 check_mean_hypothesis <- function(data, column_name, X) {
   test_result <- t.test(data[[column_name]], mu = X)
@@ -143,10 +145,15 @@ test_results <- sapply(columns_to_test, function(col) {
   check_mean_hypothesis(MnM_sample, col, av_per_color)
 })
 
-t(t(test_results))
+percent(test_results)
 ```
+Now we will do the same checking for 2 samples, to see whether there is correlation between each 2 colors distribution.
 
-```{r P.value test}
+for each row i and column j,
+1) if i==j, this it the check from before of the expected value to n_unit/n_color
+2) if i!=j, this is two samples test of same expected value hypothesis
+
+```{r P.value test, echo=FALSE}
 check_mean_hypothesis <- function(data, column_name, X) {
   t.test(data[[column_name]], mu = X)$p.value}
 
@@ -168,19 +175,26 @@ for (i in 1:num_cols) {
 
 round(as.data.frame(p_value_matrix),4)
 ```
-
+and lets see it visually:
 ```{r plot 2 colors, warning=FALSE, error=FALSE}
 MnM_sample %>%
     pivot_longer(cols = 1:6, names_to = "Variable", values_to = "pieces") %>%
     ggplot(aes(fill=Variable ,x= pieces, alpha= 0.4))+
-  geom_histogram(position = "identity")
+  geom_histogram(position = "identity")+
+  theme(panel.grid = element_line(color = "grey70",
+                                  size = 0.75))
 ```
+### Variance Distribution Checking
 
-we can see that the variance distribution is Gamma like with shape and rate as seen below
+W know that the distribution of variance is approximately Gamma distribution:
 
-```{r, warning=FALSE, error=FALSE}
+$$f(x) = \frac{1}{(\Gamma(\alpha)\theta^\alpha)} x^{\alpha-1}e^{-x/\theta}$$
+
+We can see that the variance distribution is Gamma like with shape and rate as seen below
+
+```{r, warning=FALSE, error=FALSE, echo=F}
 gamma_params <- fitdistr(MnM_sample$Variance, "gamma")$estimate
-paste0("the parameters of the gamma shaped var is shape ", round(gamma_params[1],3)," and rate ", round(gamma_params[2],3) )
+paste0("The parameters of the gamma shaped variance is shape ", round(gamma_params[1],3)," and rate ", round(gamma_params[2],3) )
 shape_est <- gamma_params["shape"]
 scale_est <- 1 / gamma_params["rate"] #using Scale= 1/Rate
 
@@ -201,8 +215,6 @@ MnM_sample %>% #plot density
 #check too low color (under 10%) and sample by n number
 
 #use statistics to sample better low chance cases
-
-# optimizing best package
 
 ### n*m types of snacks
 
@@ -245,7 +257,7 @@ grams_op<- c(25,45,150,250,330,500,750,1000)
 n_unit_op<- grams_op/gram
 
 mega_snack_1<-
-  mega_snack(50,n_unit_op,color_op) %>% as.data.frame() %>% 
+  mega_snack(500,n_unit_op,color_op) %>% as.data.frame() %>% 
   mutate(n_unit= round(n_unit,1))
 
 mega_snack_1 %>% head(6)
