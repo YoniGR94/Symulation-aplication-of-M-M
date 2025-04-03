@@ -1,5 +1,5 @@
 ---
-title: "My MnM OCD"
+title: "My M&M OCD"
 author: "Yoni"
 date: "`r format(Sys.time(), '%d %m, %Y')`"
 output: pdf_document

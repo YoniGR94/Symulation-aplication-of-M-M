@@ -4,11 +4,9 @@
 
 🔴🟡🟠🟢🔵🟤
 
-
 This repository contains a data simulation of M&M packages, analyzing the distribution of colors and various statistical properties.
 
 The goal is to explore simulation creation and identify potential biases or anomalies.
-
 
 ### 📂 What’s Inside?
 
@@ -25,21 +23,27 @@ The goal is to explore simulation creation and identify potential biases or anom
 
 1. How evenly does colors distributed in an M&M package?
 
-2. What is the probability of getting less than half of a certain color?
+2. What is the probability of getting too little of one color?
 
 3. Do different package sizes affect color variation?
 
-4. Are there significant deviations from expected randomness?
-
-Clone the repository and run the analysis using R and ggplot2.
-
 ### 📚 required libraries
+
+Clone the repository and run the analysis using the Tidyverse and visualization using ggplot.
 
 ```
 library(tidyverse)
 library(MASS)
 library(scales)
 ```
+
+### 🔧 AI
+
+I use approximately 15% AI prompt for these tasks:
+
+1. Error on cloning and function output
+
+2. Automation of simple functions and plots
 
 ### 🤝 Contributions
 
