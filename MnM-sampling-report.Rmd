@@ -224,7 +224,7 @@ We will create a function that create sample for each number of colors and packa
 mega_snack<- function(nn,n_unit,n_color)
   {
   m_sample<- length(n_unit)*length(n_color)
-  nul_mat= matrix(,nrow = m_sample, ncol = 5)
+  nul_mat= matrix(nrow = m_sample, ncol = 6)
   res<- cbind(rep(n_unit,length(n_color)),sort(rep(n_color,length(n_unit))),
                                                nul_mat)
   for (i in 1:(dim(res)[1]))
@@ -237,16 +237,19 @@ mega_snack<- function(nn,n_unit,n_color)
       mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/n_color, #how many evens colors there are
              even_evens= (rowSums(across(c(1:n_color)  , ~ .x %% 2 == 1)) %% 2 ==0)/n_color, #are the uneven colors even
              var_col=    apply(across(c(1:n_color)), 1, var), #var of candy per color/ type
+             min=        apply(across(c(1:n_color)), 1, min), #lowest value in color
              all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== n_color,
-             low_col=   rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1)
+             low_col=    rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1
+            )
     res[i,3]<- mean(small_sample$even_count)
     res[i,4]<- mean(small_sample$even_evens)
     res[i,5]<- mean(small_sample$var_col)
     res[i,6]<- mean(small_sample$all_even)
     res[i,7]<- mean(small_sample$low_col)
+    res[i,8]<- min(small_sample$min)
       }
-  colnames(res)<- c("n_unit", "n_color", "even_count", "even_evens", "var_col","all_even","low_color")
-  res
+  colnames(res)<- c("n_unit", "n_color", "even_count", "even_evens", "var_col","all_even","low_color","smallest_col")
+  res %>% as.data.frame()
   }
 ```
 
@@ -257,10 +260,11 @@ grams_op<- c(25,45,150,250,330,500,750,1000)
 n_unit_op<- grams_op/gram
 
 mega_snack_1<-
-  mega_snack(500,n_unit_op,color_op) %>% as.data.frame() %>% 
+  mega_snack(700,n_unit_op,color_op) %>% #as.data.frame() %>% 
   mutate(n_unit= round(n_unit,1))
 
 mega_snack_1 %>% head(6)
+
 ```
 
 ```{r hitmap, warning=FALSE, error=FALSE}
@@ -312,6 +316,22 @@ mega_snack_1 %>%
   theme_minimal()
 ```
 
+```{r smallest color vs expected, warning=FALSE, error=FALSE}
+
+mega_snack_1 %>% 
+  select_(1,2,8) %>% 
+  mutate(smallest_to_mu= smallest_col*n_color/n_unit) %>%
+   ggplot(aes(x = factor(round(n_unit, 1)), y = n_color, fill = smallest_to_mu))+
+  geom_tile(color = "white") +
+    geom_text(aes(label = sprintf("%.2f%%", smallest_to_mu * 100)), color = "black", size = 4)+
+  scale_fill_gradient(low = "pink2", high = "red4",labels = scales::percent)+
+  labs(title = "Chance of Less Than 66% Color in Package",
+       x = "lentils",
+       y = "No. of colors",
+       fill = "low color")+
+  theme_minimal()
+  
+```
 As we can see, only the small package (less than 50 lentils) have high probability of at least one color to appear severely lower.
 
 Therefore, splitting package by color on the big ones should be relatively even.
