@@ -13,10 +13,12 @@ I wanted to know, if I eat m&m package 2 by 2, separated by color, what is the c
 In addition, here are some BI incite that needed to be checked:
 
 1. What is the probability of M&M packages packaged fairly?
+
 2. What is the probability of M&M packages packaged without one color?
+
 3. How does the size of the package or number of colors affect this probability?
 
-###
+### Method
 
 The method is based of simulation of some M&M bags, according to the most common sizes.
 Each time we sample x lentils, name them by colors (represented as factorial numbers), and see the results for many packages as a statistic data.
@@ -28,6 +30,7 @@ library(tidyverse)
 library(MASS) #calculate distribution parameters
 library(scales)
 ```
+
 The basic parameters (will be changed later):
 
 ```{r parameters, error=FALSE, warning=FALSE}
@@ -41,7 +44,7 @@ av_per_color= n_unit/n_color
 paste0("The avarage number of lentils per color is ", round(av_per_color,2))
 ```
 
-# Creating of Sample
+# Creating of the Sample
 
 ## General Sample
 
@@ -292,7 +295,7 @@ mega_snack<- function(nn,n_unit,n_color)
 color_op<- 2:7
 grams_op<- c(25,45,150,250,330,500,750,1000)
 n_unit_op<- grams_op/gram
-nn=700
+nn=900
 ```
 
 We will make the multiple sample. Here is some random rows:
@@ -301,7 +304,7 @@ We will make the multiple sample. Here is some random rows:
 mega_snack_1<-
   mega_snack(nn,n_unit_op,color_op) %>% #as.data.frame() %>% 
   mutate(n_unit= round(n_unit,1))
-mega_snack_1 %>% sample(5)
+mega_snack_1 %>% sample_n(5)
 ```
 
 ```{r hitmap, warning=FALSE, error=FALSE}
