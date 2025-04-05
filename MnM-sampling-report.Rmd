@@ -23,7 +23,7 @@ Each time we sample x lentils, name them by colors (represented as factorial num
 
 ### Parameters
 
-```{r packages, error=FALSE, warning=FALSE, echo=FALSE}
+```{r packages, message=FALSE, warning=FALSE, echo=FALSE}
 library(tidyverse)
 library(MASS) #calculate distribution parameters
 library(scales)
@@ -70,7 +70,6 @@ sample_MnM<-function(nn,x_units,t_colors)
   for (i in 1:nn)
     {res[i,]<- create_bag(x= x_units,tx=t_colors)}
   res}
-
 ```
 ```{r sample example, error=FALSE, warning=FALSE, echo=FALSE}
 #example
@@ -86,7 +85,23 @@ sample_MnM(3,10,6) %>%
 
 Now will be creating nn bugs of M&M
 
-```{r creating the bag, warning=FALSE, error=FALSE}
+columns:
+
+1. V1:V6- the number of lentils per color
+
+2. even_count- how many evens colors there are
+
+3. even_evens- are the uneven colors even
+
+4. Variance- variance of lentils per color
+
+5. low_col- 
+
+6. min- the lowest color in each row
+
+here are the first rows:
+
+```{r creating the bag, warning=FALSE, error=FALSE, echo=FALSE}
 MnM_sample<- sample_MnM(nn,n_unit,n_color)
 
 MnM_sample<-
@@ -94,29 +109,17 @@ MnM_sample<-
   mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0)), #how many evens colors there are
          even_evens= rowSums(across(c(1:6), ~ .x %% 2 == 1)) %% 2 ==0, #are the uneven colors even
          Variance=    apply(across(c(1:6)), 1, var), #var of candy per color/ type
-         low_col=    rowSums(across(c(1:6), ~ .x <= 0.6*av_per_color)),
+         low_col=    rowSums(across(c(1:6), ~ .x <= 0.66*av_per_color)),
          min=        apply(across(c(1:6)),1,FUN = min)) # lowest value in color
+
+MnM_sample %>% head(6)
 ```
 
 plot the MnM sample sample
 
-```{r ggplot 1 sample, warning=FALSE, error=FALSE}
+```{r ggplot 1 sample, warning=FALSE, error=FALSE, echo=F}
+print("summary of all colors Distibution:")  #summary of all colors
 
-MnM_sample %>% 
-  mutate(is.even = even_count %%2 ==0) %>% 
-  ggplot(aes(x= even_count, fill= is.even))+
-  geom_bar()+
-    geom_text(
-    stat = "count",
-    aes(label = ..count..),vjust = -0.5
-  ) 
-
-MnM_sample %>%
-  mutate(is.even = V1 %%2 ==0) %>% 
-  ggplot(aes(x= V1, fill= is.even, alpha= 0.7))+
-  geom_bar()
-
-#summary of all colors
 rbind(
 MnM_sample$V1 %>% summary(),
 MnM_sample$V2 %>% summary(),
@@ -126,6 +129,23 @@ MnM_sample$V5 %>% summary(),
 MnM_sample$V6 %>% summary()
 ) %>% as.data.frame() %>% cbind(sapply(MnM_sample[,1:6],var,na.rm=1)) %>% 
   rename("Var" ="sapply(MnM_sample[, 1:6], var, na.rm = 1)")
+
+MnM_sample %>%
+  mutate(is.even = even_count %%2 ==0) %>% 
+  ggplot(aes(x= even_count, fill= is.even))+
+  geom_bar()+
+    geom_text(
+    stat = "count",
+    aes(label = ..count..),vjust = -0.5
+  )+labs(title="Distibution of Eveness of Colors")
+
+
+MnM_sample %>%
+  mutate(is.even = V1 %%2 ==0) %>% 
+  ggplot(aes(x= V1, fill= is.even, alpha= 0.7))+
+  geom_bar()+labs(title="Example of One Color Distibution")
+
+
 ```
 
 ## Test Expected Value
@@ -135,9 +155,10 @@ Here is the result, none of them bellow 5% P. value
 
 ```{r t test mu, echo=FALSE}
 #test mu is av_per_color
-check_mean_hypothesis <- function(data, column_name, X) {
+check_mean_hypothesis <- function(data, column_name, X)
+  {
   test_result <- t.test(data[[column_name]], mu = X)
-  return(test_result$p.value)
+  test_result$p.value
 }
 
 columns_to_test <- colnames(MnM_sample[,1:6])
@@ -174,19 +195,29 @@ for (i in 1:num_cols) {
 }
 
 round(as.data.frame(p_value_matrix),4)
+
+round(as.data.frame(p_value_matrix),4) %>%
+  mutate(color_1= rownames(p_value_matrix)) %>% 
+  pivot_longer(cols = V1:V6, names_to = "color_2", values_to = "t_test") %>% 
+  mutate(reject_H0 = t_test<= 0.05) %>% 
+  ggplot(aes(x= color_1, y= color_2))+
+  geom_text(aes(label = t_test * 100,, color = reject_H0), size = 4)+
+  labs(title="Colors Correlation Map")
+
 ```
-and lets see it visually:
-```{r plot 2 colors, warning=FALSE, error=FALSE}
+now here Is visualization of the actual data per color:
+```{r plot 2 colors, warning=FALSE, error=FALSE, echo=F}
 MnM_sample %>%
     pivot_longer(cols = 1:6, names_to = "Variable", values_to = "pieces") %>%
-    ggplot(aes(fill=Variable ,x= pieces, alpha= 0.4))+
+    ggplot(aes(fill=Variable ,x= pieces))+
   geom_histogram(position = "identity")+
   theme(panel.grid = element_line(color = "grey70",
-                                  size = 0.75))
+                                  size = 0.75))+facet_wrap(~Variable)
 ```
+
 ### Variance Distribution Checking
 
-W know that the distribution of variance is approximately Gamma distribution:
+We know that the distribution of variance is approximately Gamma distribution:
 
 $$f(x) = \frac{1}{(\Gamma(\alpha)\theta^\alpha)} x^{\alpha-1}e^{-x/\theta}$$
 
@@ -212,8 +243,6 @@ MnM_sample %>% #plot density
   theme_minimal()
 ```
 
-#check too low color (under 10%) and sample by n number
-
 #use statistics to sample better low chance cases
 
 ### n*m types of snacks
@@ -234,10 +263,14 @@ mega_snack<- function(nn,n_unit,n_color)
     small_sample<- sample_MnM(nn,res[i,1],res[i,2])
     small_sample<-
       small_sample %>% as_data_frame() %>% 
-      mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/n_color, #how many evens colors there are
-             even_evens= (rowSums(across(c(1:n_color)  , ~ .x %% 2 == 1)) %% 2 ==0)/n_color, #are the uneven colors even
-             var_col=    apply(across(c(1:n_color)), 1, var), #var of candy per color/ type
-             min=        apply(across(c(1:n_color)), 1, min), #lowest value in color
+      mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/n_color,
+             #how many evens colors there are
+             even_evens= (rowSums(across(c(1:n_color)  , ~ .x %% 2 == 1)) %% 2 ==0)/n_color,
+             #are the uneven colors even
+             var_col=    apply(across(c(1:n_color)), 1, var),
+             #var of candy per color/ type
+             min=        apply(across(c(1:n_color)), 1, min),
+             #lowest value in color
              all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== n_color,
              low_col=    rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1
             )
@@ -248,23 +281,27 @@ mega_snack<- function(nn,n_unit,n_color)
     res[i,7]<- mean(small_sample$low_col)
     res[i,8]<- min(small_sample$min)
       }
-  colnames(res)<- c("n_unit", "n_color", "even_count", "even_evens", "var_col","all_even","low_color","smallest_col")
+  colnames(res)<- c("n_unit", "n_color", "even_count", "even_evens",
+                    "var_col","all_even","low_color","smallest_col")
   res %>% as.data.frame()
   }
 ```
 
 
-```{r baking multy sample, warning=FALSE, error=FALSE}
+```{r Data for multiple sample, warning=FALSE, error=FALSE}
 color_op<- 2:7
 grams_op<- c(25,45,150,250,330,500,750,1000)
 n_unit_op<- grams_op/gram
+nn=700
+```
 
+We will make the multiple sample. Here is some random rows:
+
+```{r baking multiple sample, warning=FALSE, error=FALSE, echo= F}
 mega_snack_1<-
-  mega_snack(700,n_unit_op,color_op) %>% #as.data.frame() %>% 
+  mega_snack(nn,n_unit_op,color_op) %>% #as.data.frame() %>% 
   mutate(n_unit= round(n_unit,1))
-
-mega_snack_1 %>% head(6)
-
+mega_snack_1 %>% sample(5)
 ```
 
 ```{r hitmap, warning=FALSE, error=FALSE}
@@ -316,8 +353,7 @@ mega_snack_1 %>%
   theme_minimal()
 ```
 
-```{r smallest color vs expected, warning=FALSE, error=FALSE}
-
+```{r smallest color vs expected, warning=FALSE, error=FALSE, echo=F}
 mega_snack_1 %>% 
   select_(1,2,8) %>% 
   mutate(smallest_to_mu= smallest_col*n_color/n_unit) %>%
@@ -330,7 +366,6 @@ mega_snack_1 %>%
        y = "No. of colors",
        fill = "low color")+
   theme_minimal()
-  
 ```
 As we can see, only the small package (less than 50 lentils) have high probability of at least one color to appear severely lower.
 
