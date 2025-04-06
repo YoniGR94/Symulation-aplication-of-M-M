@@ -21,7 +21,7 @@ In addition, here are some BI incite that needed to be checked:
 ### Method
 
 The method is based of simulation of some M&M bags, according to the most common sizes.
-Each time we sample x lentils, name them by colors (represented as factorial numbers), and see the results for many packages as a statistic data.
+Each time we sample x lentils, name them by colors (V1,V2...), and see the results for many packages as a statistic data.
 
 ### Parameters
 
@@ -35,7 +35,7 @@ The basic parameters (will be changed later):
 
 ```{r parameters, error=FALSE, warning=FALSE}
 #parameters
-nn<- 500            #numbers of bags per sample
+nn<- 800            #numbers of bags per sample
 n_color<- 6         #unique colors of M&M
 gram<- 0.91         #weight of one M&M
 bag_g<- 250         #common weight of M&M package
@@ -48,9 +48,9 @@ paste0("The avarage number of lentils per color is ", round(av_per_color,2))
 
 ## General Sample
 
-create_bag is a function to create one snack package as matrix.
+create_bag- function to create one snack package as matrix.
 
-sample_MnM is a function to create n bags from the create_bag function.
+sample_MnM- function to create n bags from the create_bag function.
 
 ```{r sample one bag, error=FALSE, warning=FALSE, echo=F}
 #create bag using sample vector
@@ -98,7 +98,7 @@ columns:
 
 4. Variance- variance of lentils per color
 
-5. low_col- 
+5. low_col- sum true if one color's count is lower than $\frac{2}{3}$ of expected value
 
 6. min- the lowest color in each row
 
@@ -142,13 +142,10 @@ MnM_sample %>%
     aes(label = ..count..),vjust = -0.5
   )+labs(title="Distibution of Eveness of Colors")
 
-
 MnM_sample %>%
   mutate(is.even = V1 %%2 ==0) %>% 
   ggplot(aes(x= V1, fill= is.even, alpha= 0.7))+
   geom_bar()+labs(title="Example of One Color Distibution")
-
-
 ```
 
 ## Test Expected Value
@@ -214,7 +211,7 @@ MnM_sample %>%
     pivot_longer(cols = 1:6, names_to = "Variable", values_to = "pieces") %>%
     ggplot(aes(fill=Variable ,x= pieces))+
   geom_histogram(position = "identity")+
-  theme(panel.grid = element_line(color = "grey70",
+  theme(panel.grid = element_line(color = "grey50",
                                   size = 0.75))+facet_wrap(~Variable)
 ```
 
@@ -234,7 +231,7 @@ scale_est <- 1 / gamma_params["rate"] #using Scale= 1/Rate
 
 MnM_sample %>% #plot density
   ggplot(aes(x = Variance, fill = "orange")) +
-  geom_density(fill= "lightblue4", alpha= 0.8) +
+  geom_density(fill= "skyblue", alpha= 0.8) +
   geom_vline(xintercept = mean(MnM_sample$Variance), color = "blue", size=1) +
   geom_vline(xintercept = scale_est*shape_est, color = "red", linetype = "dashed", size=1) +
   stat_function(fun = dgamma, args = list(shape = shape_est, scale = scale_est), 
@@ -252,20 +249,19 @@ MnM_sample %>% #plot density
 
 We will create a function that create sample for each number of colors and package size we want, and then calculate some interesting parameters
 
-```{r function multy-sample, warning=FALSE, error=FALSE}
+```{r function multy-sample, warning=FALSE, error=FALSE, echo=F}
 mega_snack<- function(nn,n_unit,n_color)
   {
   m_sample<- length(n_unit)*length(n_color)
   nul_mat= matrix(nrow = m_sample, ncol = 6)
-  res<- cbind(rep(n_unit,length(n_color)),sort(rep(n_color,length(n_unit))),
-                                               nul_mat)
+  res<- cbind(rep(n_unit,length(n_color)),
+              sort(rep(n_color,length(n_unit))),
+              nul_mat)
   for (i in 1:(dim(res)[1]))
   {
-    #print(c(res[i,1],res[i,2]))
     low_color<- 0.666*res[i,1]/(res[i,2])
     small_sample<- sample_MnM(nn,res[i,1],res[i,2])
-    small_sample<-
-      small_sample %>% as_data_frame() %>% 
+    small_sample<-small_sample %>% as_data_frame() %>% 
       mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/n_color,
              #how many evens colors there are
              even_evens= (rowSums(across(c(1:n_color)  , ~ .x %% 2 == 1)) %% 2 ==0)/n_color,
@@ -292,28 +288,28 @@ mega_snack<- function(nn,n_unit,n_color)
 
 
 ```{r Data for multiple sample, warning=FALSE, error=FALSE}
-color_op<- 2:7
+color_op<- 2:8
 grams_op<- c(25,45,150,250,330,500,750,1000)
 n_unit_op<- grams_op/gram
-nn=900
+nn=500
 ```
 
 We will make the multiple sample. Here is some random rows:
 
 ```{r baking multiple sample, warning=FALSE, error=FALSE, echo= F}
 mega_snack_1<-
-  mega_snack(nn,n_unit_op,color_op) %>% #as.data.frame() %>% 
+  mega_snack(nn,n_unit_op,color_op) %>%
   mutate(n_unit= round(n_unit,1))
 mega_snack_1 %>% sample_n(5)
 ```
 
-```{r hitmap, warning=FALSE, error=FALSE}
+```{r hitmap, warning=FALSE, error=FALSE, echo=F}
 mega_snack_1 %>%
   ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_count )) +
   geom_tile() +
   scale_fill_gradient(low = "blue", high = "red4")+
-  labs(title = "Heatmap of mega_snack even_count",
-       x = "lentils",
+  labs(title = "Heatmap of avarage even_count by number of colors and units",
+       x = "Lentils",
        y = "No. of colors",
        fill = "even_count") +
   theme_minimal()
@@ -322,24 +318,25 @@ mega_snack_1 %>%
 mega_snack_1 %>%
   ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_evens )) +
   geom_tile() +
-  scale_fill_gradient(low = "lightblue", high = "red")+
+  scale_fill_gradient(low = "deepskyblue", high = "red")+
   labs(title = "Heatmap of mega_snack even_evens",
-       x = "lentils",
+       x = "Lentils",
        y = "No. of colors",
-       fill = "even_evens") +
+       fill = "even evens") +
   theme_minimal()
 ```
 
 now let us see the probability of all even, and whether there is pattern.
 ```{r ggplot all even, warning=FALSE, error=FALSE}
 mega_snack_1 %>%
-  ggplot(aes(x = (round( n_unit,1) ), y = n_color , color = all_even,size = all_even )) +
+  ggplot(aes(x = as.factor(round( n_unit,1) ), y = n_color , color = all_even,size = 8 )) +
   geom_point() +
-  scale_color_gradient(low = "orange3", high = "green4")
+  scale_color_gradient(low = "yellow", high = "darkolivegreen3")+
   labs(title = "Heatmap of mega_snack all evens",
-       x = "lentils",
+       x = "Lentils",
        y = "No. of colors",
        color = "all_even") +
+        geom_text(aes(label = all_even * 100), color = "black", size = 4)+
   theme_minimal()
 ```
 
@@ -348,9 +345,9 @@ mega_snack_1 %>%
   ggplot(aes(x = factor(round(n_unit, 1)), y = n_color, fill = low_color))+
   geom_tile(color = "white") +
     geom_text(aes(label = sprintf("%.2f%%", low_color * 100)), color = "black", size = 4)+
-  scale_fill_gradient(low = "pink2", high = "red4",labels = scales::percent)+
+  scale_fill_gradient(low = "darkolivegreen3", high = "red3",labels = scales::percent)+
   labs(title = "Chance of Less Than 66% Color in Package",
-       x = "lentils",
+       x = "Lentils",
        y = "No. of colors",
        fill = "low color")+
   theme_minimal()
@@ -362,13 +359,13 @@ mega_snack_1 %>%
   mutate(smallest_to_mu= smallest_col*n_color/n_unit) %>%
    ggplot(aes(x = factor(round(n_unit, 1)), y = n_color, fill = smallest_to_mu))+
   geom_tile(color = "white") +
-    geom_text(aes(label = sprintf("%.2f%%", smallest_to_mu * 100)), color = "black", size = 4)+
-  scale_fill_gradient(low = "pink2", high = "red4",labels = scales::percent)+
-  labs(title = "Chance of Less Than 66% Color in Package",
-       x = "lentils",
+    geom_text(aes(label = sprintf("%.1f%%", smallest_to_mu * 100)), color = "black", size = 4)+
+  scale_fill_gradient(low = "red3", high = "darkolivegreen3",labels = scales::percent)+
+  labs(title = "Smallest Color as Percent of Expected Value",
+       x = "Lentils",
        y = "No. of colors",
-       fill = "low color")+
-  theme_minimal()
+       fill = "% of Expected Value")+
+  theme_bw()
 ```
 As we can see, only the small package (less than 50 lentils) have high probability of at least one color to appear severely lower.
 
