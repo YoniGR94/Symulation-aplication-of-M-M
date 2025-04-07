@@ -260,8 +260,8 @@ mega_snack<- function(nn,n_unit,n_color)
   for (i in 1:(dim(res)[1]))
   {
     low_color<- 0.666*res[i,1]/(res[i,2])
-    small_sample<- sample_MnM(nn,res[i,1],res[i,2])
-    small_sample<-small_sample %>% as_data_frame() %>% 
+    small_sample<- sample_MnM(nn,res[i,1],res[i,2])%>%
+      as_data_frame() %>% 
       mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/n_color,
              #how many evens colors there are
              even_evens= (rowSums(across(c(1:n_color)  , ~ .x %% 2 == 1)) %% 2 ==0)/n_color,
@@ -314,6 +314,40 @@ mega_snack_1 %>%
        fill = "even_count") +
   theme_minimal()
 ```
+
+```{r regression, warning=FALSE, error=FALSE, echo=F}
+mega_snack_open<- function(nn,n_unit,n_color)
+  {
+  m_sample<- nn*length(n_unit)*length(n_color)
+  nul_mat= matrix(nrow = m_sample, ncol = 2)
+  res<- cbind(rep(n_unit,nn*length(n_color)),
+         sort(rep(n_color,nn*length(n_unit))),
+              nul_mat)
+  for (i in 1:(dim(res)[1]))
+  {
+    low_color<- 0.666*res[i,1]/(res[i,2])
+    small_sample<- create_bag(res[i,1],res[i,2])%>%
+      as_data_frame() %>% 
+      mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/res[i,2],
+             all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== res[i,2],
+            )
+    res[i,3]<- mean(small_sample$even_count)
+    res[i,4]<- mean(small_sample$all_even)
+      }
+  colnames(res)<- c("n_unit", "n_color", "even_count","all_even")
+  res %>% as.data.frame()
+  }
+
+mega_snack_2<- mega_snack_open(15,n_unit_op,color_op) %>% 
+  mutate(color_No2= n_color %%2 == 0) #check if the number of colors is even
+lm_color<- lm(mega_snack_2$even_count~ mega_snack_2$n_color +mega_snack_2$n_unit+ mega_snack_2$color_No2)
+lm_color %>% summary()
+
+
+lm_color_all<- lm(mega_snack_2$all_even~ mega_snack_2$n_color +mega_snack_2$n_unit)
+lm_color %>% summary()
+```
+
 ```{r hitmap_2, warning=FALSE, error=FALSE}
 mega_snack_1 %>%
   ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_evens )) +
@@ -370,3 +404,18 @@ mega_snack_1 %>%
 As we can see, only the small package (less than 50 lentils) have high probability of at least one color to appear severely lower.
 
 Therefore, splitting package by color on the big ones should be relatively even.
+
+# Conclusions
+
+### Data Structure
+
+
+
+### Main Q: Eating M&M by Two
+
+Although there is no clear pattern to the right M&M package for all the colors to have even count,
+maybe different approach can find a clear reason for more or less couples of M&M.
+
+the general probability of all colors to be even is 4% for small 50g package 2.8% for big 1000g package, and overall 2.8%, which is less than I expected.
+
+### Summery

@@ -8,6 +8,13 @@ This repository contains a data simulation of M&M packages, analyzing the distri
 
 The goal is to explore simulation creation and identify potential biases or anomalies.
 
+Look for the result here:
+
+[Presentation PDF](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.pdf)
+
+[RMD code file](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.Rmd)
+
+
 ### 📂 What’s Inside?
 
 ✅ Simulated M&M packages with different color distributions
