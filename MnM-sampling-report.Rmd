@@ -30,8 +30,7 @@ library(tidyverse)
 library(MASS) #calculate distribution parameters
 library(scales)
 ```
-
-The basic parameters (will be changed later):
+Basic parameters:
 
 ```{r parameters, error=FALSE, warning=FALSE}
 #parameters
@@ -48,9 +47,11 @@ paste0("The avarage number of lentils per color is ", round(av_per_color,2))
 
 ## General Sample
 
-create_bag- function to create one snack package as matrix.
+In order to test the theoretical data, we ned to simulate it using costumize functions. here are there:
 
-sample_MnM- function to create n bags from the create_bag function.
+* create_bag- function to create one snack package for chosen pachage size and number of colors.
+
+* sample_MnM- function to create n bags from the create_bag function.
 
 ```{r sample one bag, error=FALSE, warning=FALSE, echo=F}
 #create bag using sample vector
@@ -81,7 +82,8 @@ create_bag(100,6)
 print("3 bags:")
 sample_MnM(3,10,6) %>% 
    `colnames<-`(c(1:6)) %>% 
-   `rownames<-`(c("Bag_1","Bag_2","Bag_3"))
+   `rownames<-`(c("Bag_1","Bag_2","Bag_3")) %>% 
+   `colnames<-`(c("Red","Blue","Green", "Orange", "Yellow", "Brown"))
 ```
 
 ## Preview Graph
@@ -105,31 +107,32 @@ columns:
 here are the first rows:
 
 ```{r creating the bag, warning=FALSE, error=FALSE, echo=FALSE}
-MnM_sample<- sample_MnM(nn,n_unit,n_color)
+MnM_sample<- sample_MnM(nn,n_unit,n_color) %>% 
+     `colnames<-`(c("Red","Blue","Green", "Orange", "Yellow", "Brown"))
 
 MnM_sample<-
   MnM_sample %>% as_data_frame() %>% 
   mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0)), #how many evens colors there are
          even_evens= rowSums(across(c(1:6), ~ .x %% 2 == 1)) %% 2 ==0, #are the uneven colors even
-         Variance=    apply(across(c(1:6)), 1, var), #var of candy per color/ type
          low_col=    rowSums(across(c(1:6), ~ .x <= 0.66*av_per_color)),
+         Variance=    apply(across(c(1:6)), 1, var), #var of candy per color/ type
          min=        apply(across(c(1:6)),1,FUN = min)) # lowest value in color
 
 MnM_sample %>% head(6)
 ```
 
-plot the MnM sample sample
+plot the M&M sample sample
 
 ```{r ggplot 1 sample, warning=FALSE, error=FALSE, echo=F}
 print("summary of all colors Distibution:")  #summary of all colors
 
 rbind(
-MnM_sample$V1 %>% summary(),
-MnM_sample$V2 %>% summary(),
-MnM_sample$V3 %>% summary(),
-MnM_sample$V4 %>% summary(),
-MnM_sample$V5 %>% summary(),
-MnM_sample$V6 %>% summary()
+MnM_sample$Red %>% summary(),
+MnM_sample$Blue %>% summary(),
+MnM_sample$Green %>% summary(),
+MnM_sample$Orange %>% summary(),
+MnM_sample$Yellow %>% summary(),
+MnM_sample$Brown %>% summary()
 ) %>% as.data.frame() %>% cbind(sapply(MnM_sample[,1:6],var,na.rm=1)) %>% 
   rename("Var" ="sapply(MnM_sample[, 1:6], var, na.rm = 1)")
 
@@ -143,13 +146,17 @@ MnM_sample %>%
   )+labs(title="Distibution of Eveness of Colors")
 
 MnM_sample %>%
-  mutate(is.even = V1 %%2 ==0) %>% 
-  ggplot(aes(x= V1, fill= is.even, alpha= 0.7))+
-  geom_bar()+labs(title="Example of One Color Distibution")
+  mutate(is.even = Red %%2 ==0) %>% 
+  ggplot(aes(x= Red, fill= is.even))+
+  scale_fill_manual(values = c("red", "red4"))+
+  geom_bar()+labs(title="Example of One Color Distibution")+
+  theme(panel.grid = element_line(color = "gray50"))
 ```
+## Statisics Checking of the Simullation
 
-## Test Expected Value
-to see is the mu of the lentils per color are fair, we will test it per column with t.test for each color.
+### Test Expected Value
+
+to see is the $\mu$ of the lentils per color are fair, we will test it per column with t.test for each color.
 
 Here is the result, none of them bellow 5% P. value
 
@@ -168,6 +175,7 @@ test_results <- sapply(columns_to_test, function(col) {
 
 percent(test_results)
 ```
+
 Now we will do the same checking for 2 samples, to see whether there is correlation between each 2 colors distribution.
 
 for each row i and column j,
@@ -194,23 +202,24 @@ for (i in 1:num_cols) {
   }
 }
 
-round(as.data.frame(p_value_matrix),4)
+#round(as.data.frame(p_value_matrix),4)
 
 round(as.data.frame(p_value_matrix),4) %>%
   mutate(color_1= rownames(p_value_matrix)) %>% 
-  pivot_longer(cols = V1:V6, names_to = "color_2", values_to = "t_test") %>% 
+  pivot_longer(cols = 1:6, names_to = "color_2", values_to = "t_test") %>% 
   mutate(reject_H0 = t_test<= 0.05) %>% 
   ggplot(aes(x= color_1, y= color_2))+
   geom_text(aes(label = t_test * 100,, color = reject_H0), size = 4)+
   labs(title="Colors Correlation Map")
-
 ```
-now here Is visualization of the actual data per color:
+Now here Is visualization of the actual data per color
+
 ```{r plot 2 colors, warning=FALSE, error=FALSE, echo=F}
 MnM_sample %>%
     pivot_longer(cols = 1:6, names_to = "Variable", values_to = "pieces") %>%
     ggplot(aes(fill=Variable ,x= pieces))+
   geom_histogram(position = "identity")+
+    scale_fill_manual(values = c("blue", "chocolate4","green4", "orange","red4", "yellow3"))+
   theme(panel.grid = element_line(color = "grey50",
                                   size = 0.75))+facet_wrap(~Variable)
 ```
@@ -230,7 +239,7 @@ shape_est <- gamma_params["shape"]
 scale_est <- 1 / gamma_params["rate"] #using Scale= 1/Rate
 
 MnM_sample %>% #plot density
-  ggplot(aes(x = Variance, fill = "orange")) +
+  ggplot(aes(x = Variance)) +
   geom_density(fill= "skyblue", alpha= 0.8) +
   geom_vline(xintercept = mean(MnM_sample$Variance), color = "blue", size=1) +
   geom_vline(xintercept = scale_est*shape_est, color = "red", linetype = "dashed", size=1) +
@@ -362,16 +371,21 @@ mega_snack_1 %>%
 
 now let us see the probability of all even, and whether there is pattern.
 ```{r ggplot all even, warning=FALSE, error=FALSE}
-mega_snack_1 %>%
+Heatmap_all_evens<-
+  mega_snack_1 %>%
   ggplot(aes(x = as.factor(round( n_unit,1) ), y = n_color , color = all_even,size = 8 )) +
   geom_point() +
   scale_color_gradient(low = "yellow", high = "darkolivegreen3")+
-  labs(title = "Heatmap of mega_snack all evens",
+  labs(title = "Heatmap of all evens",
        x = "Lentils",
        y = "No. of colors",
        color = "all_even") +
         geom_text(aes(label = all_even * 100), color = "black", size = 4)+
-  theme_minimal()
+  theme_bw()
+
+ggsave(Heatmap_all_evens, 
+       filename = "Heatmap_all_evens.png",
+       height = 4, width = 5, units = "in")
 ```
 
 ```{r ggplot missing color, warning=FALSE, error=FALSE}
@@ -401,6 +415,7 @@ mega_snack_1 %>%
        fill = "% of Expected Value")+
   theme_bw()
 ```
+
 As we can see, only the small package (less than 50 lentils) have high probability of at least one color to appear severely lower.
 
 Therefore, splitting package by color on the big ones should be relatively even.
@@ -409,13 +424,13 @@ Therefore, splitting package by color on the big ones should be relatively even.
 
 ### Data Structure
 
-
+The simulation created 
 
 ### Main Q: Eating M&M by Two
 
 Although there is no clear pattern to the right M&M package for all the colors to have even count,
 maybe different approach can find a clear reason for more or less couples of M&M.
 
-the general probability of all colors to be even is 4% for small 50g package 2.8% for big 1000g package, and overall 2.8%, which is less than I expected.
+The general probability of all colors to be even is 4% for small 50g package 2.8% for big 1000g package, and overall 2.8%, which is less than I expected.
 
 ### Summery
