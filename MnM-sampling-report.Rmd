@@ -271,15 +271,15 @@ mega_snack<- function(nn,n_unit,n_color)
     low_color<- 0.666*res[i,1]/(res[i,2])
     small_sample<- sample_MnM(nn,res[i,1],res[i,2])%>%
       as_data_frame() %>% 
-      mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/n_color,
+      mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/res[i,2],
              #how many evens colors there are
-             even_evens= (rowSums(across(c(1:n_color)  , ~ .x %% 2 == 1)) %% 2 ==0)/n_color,
+             even_evens= (rowSums(across(c(1:n_color)  , ~ .x %% 2 == 1)) %% 2 ==0)/res[i,2],
              #are the uneven colors even
              var_col=    apply(across(c(1:n_color)), 1, var),
              #var of candy per color/ type
              min=        apply(across(c(1:n_color)), 1, min),
              #lowest value in color
-             all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== n_color,
+             all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== res[i,2],
              low_col=    rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1
             )
     res[i,3]<- mean(small_sample$even_count)
@@ -312,17 +312,94 @@ mega_snack_1<-
 mega_snack_1 %>% sample_n(5)
 ```
 
+## Deep Insight on the Data
+
+here are some insights:
+
+* 
 ```{r hitmap, warning=FALSE, error=FALSE, echo=F}
 mega_snack_1 %>%
-  ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_count )) +
-  geom_tile() +
-  scale_fill_gradient(low = "blue", high = "red4")+
-  labs(title = "Heatmap of avarage even_count by number of colors and units",
+  ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_count)) +
+  geom_tile(color= "black") +
+  scale_fill_gradient(low = "orange", high = "skyblue")+
+  labs(title = "avarage even count percent by number of colors and units",
        x = "Lentils",
        y = "No. of colors",
        fill = "even_count") +
+  guides(colour= "none")+
   theme_minimal()
 ```
+
+
+```{r hitmap_2, warning=FALSE, error=FALSE, echo=F}
+mega_snack_1 %>%
+  ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_evens )) +
+  geom_tile(color= "black") +
+  scale_fill_gradient(low = "deepskyblue", high = "red")+
+  labs(title = "are the even colors evens",
+       x = "Lentils",
+       y = "No. of colors",
+       fill = "even evens") +
+  geom_text(aes(label = round(even_evens,2)), color = "black", size = 4)+
+  theme_minimal()
+```
+
+now let us see the probability of all even, and whether there is pattern.
+
+```{r ggplot all even, warning=FALSE, error=FALSE, echo=F}
+Heatmap_all_evens<-
+  mega_snack_1 %>%
+  ggplot(aes(x = as.factor(round( n_unit,1) ), y = n_color , color = all_even,size = 8 )) +
+  geom_point() +
+  scale_color_gradient(low = "yellow", high = "darkolivegreen3")+
+  labs(title = "Heatmap of all evens",
+       x = "Lentils",
+       y = "No. of colors",
+       color = "all_even") +
+        geom_text(aes(label = all_even), color = "black", size = 4)+
+    guides(size= "none")+
+  theme_bw()
+
+Heatmap_all_evens
+ggsave(Heatmap_all_evens, 
+       filename = "Heatmap_all_evens.png",
+       height = 4, width = 5, units = "in")
+  guides(colour= "none")
+```
+
+```{r ggplot missing color, warning=FALSE, error=FALSE, echo=F}
+mega_snack_1 %>%
+  ggplot(aes(x = factor(round(n_unit, 1)), y = n_color, fill = low_color))+
+  geom_tile(color = "white") +
+    geom_text(aes(label = sprintf("%.2f%%", low_color * 100)), color = "black", size = 4)+
+  scale_fill_gradient(low = "darkolivegreen3", high = "red3",labels = scales::percent)+
+  labs(title = "Chance of Less Than 66% Color in Package",
+       x = "Lentils",
+       y = "No. of colors",
+       fill = "low color")+
+  theme_minimal()
+```
+
+```{r smallest color vs expected, warning=FALSE, error=FALSE, echo=F}
+mega_snack_1 %>% 
+  select_(1,2,8) %>% 
+  mutate(smallest_to_mu= smallest_col*n_color/n_unit) %>%
+   ggplot(aes(x = factor(round(n_unit, 1)), y = n_color, fill = smallest_to_mu))+
+  geom_tile(color = "white") +
+    geom_text(aes(label = sprintf("%.1f%%", smallest_to_mu * 100)), color = "black", size = 4)+
+  scale_fill_gradient(low = "red3", high = "darkolivegreen3",labels = scales::percent)+
+  labs(title = "Smallest Color as Percent of Expected Value",
+       x = "Lentils",
+       y = "No. of colors",
+       fill = "% of Expected Value")+
+  theme_bw()
+```
+
+As we can see, only the small package (less than 50 lentils) have high probability of at least one color to appear severely lower.
+
+Therefore, splitting package by color on the big ones should be relatively even.
+
+### using regression for correlation check
 
 ```{r regression, warning=FALSE, error=FALSE, echo=F}
 mega_snack_open<- function(nn,n_unit,n_color)
@@ -356,69 +433,6 @@ lm_color %>% summary()
 lm_color_all<- lm(mega_snack_2$all_even~ mega_snack_2$n_color +mega_snack_2$n_unit)
 lm_color %>% summary()
 ```
-
-```{r hitmap_2, warning=FALSE, error=FALSE}
-mega_snack_1 %>%
-  ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_evens )) +
-  geom_tile() +
-  scale_fill_gradient(low = "deepskyblue", high = "red")+
-  labs(title = "Heatmap of mega_snack even_evens",
-       x = "Lentils",
-       y = "No. of colors",
-       fill = "even evens") +
-  theme_minimal()
-```
-
-now let us see the probability of all even, and whether there is pattern.
-```{r ggplot all even, warning=FALSE, error=FALSE}
-Heatmap_all_evens<-
-  mega_snack_1 %>%
-  ggplot(aes(x = as.factor(round( n_unit,1) ), y = n_color , color = all_even,size = 8 )) +
-  geom_point() +
-  scale_color_gradient(low = "yellow", high = "darkolivegreen3")+
-  labs(title = "Heatmap of all evens",
-       x = "Lentils",
-       y = "No. of colors",
-       color = "all_even") +
-        geom_text(aes(label = all_even * 100), color = "black", size = 4)+
-  theme_bw()
-
-ggsave(Heatmap_all_evens, 
-       filename = "Heatmap_all_evens.png",
-       height = 4, width = 5, units = "in")
-```
-
-```{r ggplot missing color, warning=FALSE, error=FALSE}
-mega_snack_1 %>%
-  ggplot(aes(x = factor(round(n_unit, 1)), y = n_color, fill = low_color))+
-  geom_tile(color = "white") +
-    geom_text(aes(label = sprintf("%.2f%%", low_color * 100)), color = "black", size = 4)+
-  scale_fill_gradient(low = "darkolivegreen3", high = "red3",labels = scales::percent)+
-  labs(title = "Chance of Less Than 66% Color in Package",
-       x = "Lentils",
-       y = "No. of colors",
-       fill = "low color")+
-  theme_minimal()
-```
-
-```{r smallest color vs expected, warning=FALSE, error=FALSE, echo=F}
-mega_snack_1 %>% 
-  select_(1,2,8) %>% 
-  mutate(smallest_to_mu= smallest_col*n_color/n_unit) %>%
-   ggplot(aes(x = factor(round(n_unit, 1)), y = n_color, fill = smallest_to_mu))+
-  geom_tile(color = "white") +
-    geom_text(aes(label = sprintf("%.1f%%", smallest_to_mu * 100)), color = "black", size = 4)+
-  scale_fill_gradient(low = "red3", high = "darkolivegreen3",labels = scales::percent)+
-  labs(title = "Smallest Color as Percent of Expected Value",
-       x = "Lentils",
-       y = "No. of colors",
-       fill = "% of Expected Value")+
-  theme_bw()
-```
-
-As we can see, only the small package (less than 50 lentils) have high probability of at least one color to appear severely lower.
-
-Therefore, splitting package by color on the big ones should be relatively even.
 
 # Conclusions
 
