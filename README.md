@@ -14,6 +14,9 @@ Look for the result here:
 
 [RMD code file](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.Rmd)
 
+for now, you can see the result: Probability of all colors of snack package be in couples by size of package and number of colors:
+
+<img src="https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/Heatmap_all_evens.png?raw=true" width="600"/>
 
 ### 📂 What’s Inside?
 
