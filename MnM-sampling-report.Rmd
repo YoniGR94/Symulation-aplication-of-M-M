@@ -116,9 +116,12 @@ MnM_sample<-
          even_evens= rowSums(across(c(1:6), ~ .x %% 2 == 1)) %% 2 ==0, #are the uneven colors even
          low_col=    rowSums(across(c(1:6), ~ .x <= 0.66*av_per_color)),
          Variance=    apply(across(c(1:6)), 1, var), #var of candy per color/ type
-         min=        apply(across(c(1:6)),1,FUN = min)) # lowest value in color
+         min=        apply(across(c(1:6)),1,FUN = min), # lowest value in color
+         all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== n_color)
+
 
 MnM_sample %>% head(6)
+
 ```
 
 plot the M&M sample sample
@@ -149,7 +152,7 @@ MnM_sample %>%
   mutate(is.even = Red %%2 ==0) %>% 
   ggplot(aes(x= Red, fill= is.even))+
   scale_fill_manual(values = c("red", "red4"))+
-  geom_bar()+labs(title="Example of One Color Distibution")+
+  geom_bar()+labs(title="Distibution of the Red Color")+
   theme(panel.grid = element_line(color = "gray50"))
 ```
 ## Statisics Checking of the Simullation
@@ -202,8 +205,6 @@ for (i in 1:num_cols) {
   }
 }
 
-#round(as.data.frame(p_value_matrix),4)
-
 round(as.data.frame(p_value_matrix),4) %>%
   mutate(color_1= rownames(p_value_matrix)) %>% 
   pivot_longer(cols = 1:6, names_to = "color_2", values_to = "t_test") %>% 
@@ -251,6 +252,23 @@ MnM_sample %>% #plot density
   scale_y_continuous(label=scales::label_percent(.1)) + 
   theme_minimal()
 ```
+### Are All Even in the Sample?
+
+```{r are all even, warning=FALSE, error=FALSE, echo=F}
+MnM_sample %>%
+  select_(1,2,3,4,5,6) %>%
+  mutate(count_even = rowSums(across(1:n_color, ~ .x %% 2 == 0))) %>%
+  count(count_even) %>%
+  ggplot(aes(x = factor(count_even), y = n, fill = count_even)) +  # make x categorical
+  geom_bar(stat = "identity", color= "grey20") +
+  scale_fill_gradient(low = "skyblue", high = "green3") +
+  labs(
+    title = "Count of Even Colors per Row",
+    x = "No. Even Rows",
+    y = "Packages"
+  ) +
+  theme_minimal()
+```
 
 #use statistics to sample better low chance cases
 
@@ -266,7 +284,9 @@ mega_snack<- function(nn,n_unit,n_color)
   res<- cbind(rep(n_unit,length(n_color)),
               sort(rep(n_color,length(n_unit))),
               nul_mat)
-  for (i in 1:(dim(res)[1]))
+    colnames(res)<- c("n_unit", "n_color", "even_count", "even_evens",
+                    "var_col","all_even","low_color","smallest_col")
+    for (i in 1:(dim(res)[1]))
   {
     low_color<- 0.666*res[i,1]/(res[i,2])
     small_sample<- sample_MnM(nn,res[i,1],res[i,2])%>%
@@ -277,20 +297,20 @@ mega_snack<- function(nn,n_unit,n_color)
              #are the uneven colors even
              var_col=    apply(across(c(1:n_color)), 1, var),
              #var of candy per color/ type
-             min=        apply(across(c(1:n_color)), 1, min),
+             smallest_col=        apply(across(c(1:n_color)), 1, min),
              #lowest value in color
-             all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== res[i,2],
-             low_col=    rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1
+             all_even=   rowSums(across(c(1:n_color), ~ .x %% 2 == 0)) == res[i,2],
+             low_color=    rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1
             )
-    res[i,3]<- mean(small_sample$even_count)
-    res[i,4]<- mean(small_sample$even_evens)
-    res[i,5]<- mean(small_sample$var_col)
-    res[i,6]<- mean(small_sample$all_even)
-    res[i,7]<- mean(small_sample$low_col)
-    res[i,8]<- min(small_sample$min)
+    res[i,3:8]<- c(
+      mean(small_sample$even_count),
+      mean(small_sample$even_evens),
+      mean(small_sample$var_col),
+      mean(small_sample$all_even),
+      mean(small_sample$low_color),
+      min(small_sample$smallest_col))
       }
-  colnames(res)<- c("n_unit", "n_color", "even_count", "even_evens",
-                    "var_col","all_even","low_color","smallest_col")
+
   res %>% as.data.frame()
   }
 ```
@@ -300,7 +320,7 @@ mega_snack<- function(nn,n_unit,n_color)
 color_op<- 2:8
 grams_op<- c(25,45,150,250,330,500,750,1000)
 n_unit_op<- grams_op/gram
-nn=500
+nn=800
 ```
 
 We will make the multiple sample. Here is some random rows:
@@ -316,7 +336,6 @@ mega_snack_1 %>% sample_n(5)
 
 here are some insights:
 
-* 
 ```{r hitmap, warning=FALSE, error=FALSE, echo=F}
 mega_snack_1 %>%
   ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_count)) +
@@ -336,7 +355,7 @@ mega_snack_1 %>%
   ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_evens )) +
   geom_tile(color= "black") +
   scale_fill_gradient(low = "deepskyblue", high = "red")+
-  labs(title = "are the even colors evens",
+  labs(title = "does the Uneven Colors Even",
        x = "Lentils",
        y = "No. of colors",
        fill = "even evens") +
@@ -344,15 +363,15 @@ mega_snack_1 %>%
   theme_minimal()
 ```
 
-now let us see the probability of all even, and whether there is pattern.
+Here is probability of all even, and whether there is pattern.
 
 ```{r ggplot all even, warning=FALSE, error=FALSE, echo=F}
 Heatmap_all_evens<-
   mega_snack_1 %>%
-  ggplot(aes(x = as.factor(round( n_unit,1) ), y = n_color , color = all_even,size = 8 )) +
-  geom_point() +
+  ggplot(aes(x = as.factor(round( n_unit,1) ), y = n_color , color = all_even)) +
+  geom_point(size = 8 ) +
   scale_color_gradient(low = "yellow", high = "darkolivegreen3")+
-  labs(title = "Heatmap of all evens",
+  labs(title = "Were all Colors Evens",
        x = "Lentils",
        y = "No. of colors",
        color = "all_even") +
