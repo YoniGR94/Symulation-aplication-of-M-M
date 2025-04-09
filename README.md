@@ -55,6 +55,8 @@ I use approximately 15% AI prompt for these tasks:
 
 2. Automation of simple functions and plots
 
+3. Peer review
+
 ### 🤝 Contributions
 
 Feel free to fork this repository, suggest improvements, or add new analyses!
