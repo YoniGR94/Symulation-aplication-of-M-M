@@ -7,8 +7,11 @@ output: pdf_document
 
 # Intro
 
-The goal of this simulation is to test the statistics of M&M and other stacks even Chocolate lentils by color,
-I wanted to know, if I eat m&m package 2 by 2, separated by color, what is the chance of my finishing the package without mixing any color in one bite.
+### Objective of Simulation
+
+The goal of this simulation is to test the statistics of M&M and other stacks even Chocolate lentils by color.
+
+I wanted to know what is the chance of my finishing the package of M&M without mixing any color in one bite, eating them 2 by 2
 
 In addition, here are some BI incite that needed to be checked:
 
@@ -20,25 +23,29 @@ In addition, here are some BI incite that needed to be checked:
 
 ### Method
 
-The method is based of simulation of some M&M bags, according to the most common sizes.
-Each time we sample x lentils, name them by colors (V1,V2...), and see the results for many packages as a statistic data.
+I do not have an inner information of how does (M&M)[https://www.mms.com/en-us] make their delicious snacks nor we know how they make sure each package have fair amount of each color.
+Therefore, the method I chose is based of simulation of some M&M bags, according to the most common sizes of packages.
+
+Each time we sample x lentils(units of M&M), name them by colors (V1,V2...), and see the results for many packages as a statistic data.
+
+my hypothesis is that the probability of perfect package (aka a package with all colors number been even) is very small, at least for a standard 6 colors pack.
 
 ### Parameters
+
+Basic parameters:
 
 ```{r packages, message=FALSE, warning=FALSE, echo=FALSE}
 library(tidyverse)
 library(MASS) #calculate distribution parameters
 library(scales)
 ```
-Basic parameters:
-
 ```{r parameters, error=FALSE, warning=FALSE}
 #parameters
-nn<- 800            #numbers of bags per sample
+n<- 800            #numbers of bags per sample
 n_color<- 6         #unique colors of M&M
 gram<- 0.91         #weight of one M&M
 bag_g<- 250         #common weight of M&M package
-n_unit<- bag_g/gram #M&M per package
+n_unit<- bag_g/gram #M&M per packagenm,
 av_per_color= n_unit/n_color
 paste0("The avarage number of lentils per color is ", round(av_per_color,2))
 ```
@@ -47,15 +54,14 @@ paste0("The avarage number of lentils per color is ", round(av_per_color,2))
 
 ## General Sample
 
-In order to test the theoretical data, we ned to simulate it using costumize functions. here are there:
+In order to test the theoretical data, we need to simulate it using customize functions. here are there:
 
-* create_bag- function to create one snack package for chosen pachage size and number of colors.
+* Create_bag- function to create one snack package for chosen package size and number of colors.
 
-* sample_MnM- function to create n bags from the create_bag function.
+* sample_MnM- function to create n bags from the Create_bag function.
 
-```{r sample one bag, error=FALSE, warning=FALSE, echo=F}
-#create bag using sample vector
-create_bag<- function(x,tx)
+```{r sampling functions, error=FALSE, warning=FALSE, echo=F}
+Create_bag<- function(x,tx) #create bag using sample vector
   {
   x<- floor(x)+sample(0:1,1)
   res<- matrix(nrow = 1, ncol = tx)
@@ -68,17 +74,17 @@ create_bag<- function(x,tx)
     }
   res}
 
-sample_MnM<-function(nn,x_units,t_colors)
+sample_MnM<-function(n,x_units,t_colors) #create n bag using sample vector
   {
-  res<- matrix(nrow = nn, ncol = t_colors)
-  for (i in 1:nn)
-    {res[i,]<- create_bag(x= x_units,tx=t_colors)}
+  res<- matrix(nrow = n, ncol = t_colors)
+  for (i in 1:n)
+    {res[i,]<- Create_bag(x= x_units,tx=t_colors)}
   res}
 ```
 ```{r sample example, error=FALSE, warning=FALSE, echo=FALSE}
 #example
 print("One bag:")
-create_bag(100,6)
+Create_bag(100,6)
 print("3 bags:")
 sample_MnM(3,10,6) %>% 
    `colnames<-`(c(1:6)) %>% 
@@ -88,7 +94,7 @@ sample_MnM(3,10,6) %>%
 
 ## Preview Graph
 
-Now will be creating nn bugs of M&M
+Now will be creating n bugs of M&M
 
 columns:
 
@@ -107,7 +113,7 @@ columns:
 here are the first rows:
 
 ```{r creating the bag, warning=FALSE, error=FALSE, echo=FALSE}
-MnM_sample<- sample_MnM(nn,n_unit,n_color) %>% 
+MnM_sample<- sample_MnM(n,n_unit,n_color) %>% 
      `colnames<-`(c("Red","Blue","Green", "Orange", "Yellow", "Brown"))
 
 MnM_sample<-
@@ -259,22 +265,21 @@ MnM_sample %>%
   select_(1,2,3,4,5,6) %>%
   mutate(count_even = rowSums(across(1:n_color, ~ .x %% 2 == 0))) %>%
   count(count_even) %>%
-  ggplot(aes(x = factor(count_even), y = n, fill = count_even)) +  # make x categorical
+  ggplot(aes(x = factor(count_even), y = n, fill = n)) +  # make x categorical
   geom_bar(stat = "identity", color= "grey20") +
   scale_fill_gradient(low = "skyblue", high = "green3") +
   labs(
     title = "Count of Even Colors per Row",
     x = "No. Even Rows",
     y = "Packages"
-  ) +
+  )+
+    geom_text(aes(label = n), color = "black", size = 4)+
   theme_minimal()
 ```
 
-#use statistics to sample better low chance cases
-
 ### n*m types of snacks
 
-We will create a function that create sample for each number of colors and package size we want, and then calculate some interesting parameters
+I will create a function that create sample for each number of colors and package size we want, and then calculate some interesting parameters
 
 ```{r function multy-sample, warning=FALSE, error=FALSE, echo=F}
 mega_snack<- function(nn,n_unit,n_color)
@@ -295,24 +300,26 @@ mega_snack<- function(nn,n_unit,n_color)
              #how many evens colors there are
              even_evens= (rowSums(across(c(1:n_color)  , ~ .x %% 2 == 1)) %% 2 ==0)/res[i,2],
              #are the uneven colors even
-             var_col=    apply(across(c(1:n_color)), 1, var),
+             var_col=     apply(across(c(1:n_color)), 1, var),
              #var of candy per color/ type
-             smallest_col=        apply(across(c(1:n_color)), 1, min),
+             smallest_col=apply(across(c(1:n_color)), 1, min),
              #lowest value in color
-             all_even=   rowSums(across(c(1:n_color), ~ .x %% 2 == 0)) == res[i,2],
-             low_color=    rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1
+             #all_even=    rowSums(across(c(1:n_color), ~ .x %% 2 == 0)) >= res[i,2],
+             all_even=    even_count >= 1,
+             low_color=   rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1
             )
+    #return(small_sample)
     res[i,3:8]<- c(
       mean(small_sample$even_count),
       mean(small_sample$even_evens),
       mean(small_sample$var_col),
-      mean(small_sample$all_even),
+      mean(small_sample$all_even,  na.rm = T),
       mean(small_sample$low_color),
       min(small_sample$smallest_col))
       }
 
   res %>% as.data.frame()
-  }
+}
 ```
 
 
@@ -375,15 +382,16 @@ Heatmap_all_evens<-
        x = "Lentils",
        y = "No. of colors",
        color = "all_even") +
-        geom_text(aes(label = all_even), color = "black", size = 4)+
+        geom_text(aes(label = sprintf("%.1f%%", all_even * 100)), color = "black", size = 4)+
     guides(size= "none")+
   theme_bw()
 
-Heatmap_all_evens
 ggsave(Heatmap_all_evens, 
        filename = "Heatmap_all_evens.png",
        height = 4, width = 5, units = "in")
   guides(colour= "none")
+
+Heatmap_all_evens
 ```
 
 ```{r ggplot missing color, warning=FALSE, error=FALSE, echo=F}
@@ -431,7 +439,7 @@ mega_snack_open<- function(nn,n_unit,n_color)
   for (i in 1:(dim(res)[1]))
   {
     low_color<- 0.666*res[i,1]/(res[i,2])
-    small_sample<- create_bag(res[i,1],res[i,2])%>%
+    small_sample<- Create_bag(res[i,1],res[i,2])%>%
       as_data_frame() %>% 
       mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/res[i,2],
              all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== res[i,2],
@@ -445,12 +453,12 @@ mega_snack_open<- function(nn,n_unit,n_color)
 
 mega_snack_2<- mega_snack_open(15,n_unit_op,color_op) %>% 
   mutate(color_No2= n_color %%2 == 0) #check if the number of colors is even
-lm_color<- lm(mega_snack_2$even_count~ mega_snack_2$n_color +mega_snack_2$n_unit+ mega_snack_2$color_No2)
+lm_color<- lm(mega_snack_2$even_count~ mega_snack_2$n_color +mega_snack_2$n_unit)
 lm_color %>% summary()
 
 
-lm_color_all<- lm(mega_snack_2$all_even~ mega_snack_2$n_color +mega_snack_2$n_unit)
-lm_color %>% summary()
+lm_color_all<- lm(mega_snack_2$all_even~ mega_snack_2$n_color +mega_snack_2$n_unit+ mega_snack_2$color_No2)
+lm_color_all %>% summary()
 ```
 
 # Conclusions
