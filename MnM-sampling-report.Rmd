@@ -361,7 +361,7 @@ mega_snack_1 %>%
 mega_snack_1 %>%
   ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_evens )) +
   geom_tile(color= "black") +
-  scale_fill_gradient(low = "deepskyblue", high = "red")+
+  scale_fill_gradient(high = "deepskyblue", low = "red")+
   labs(title = "does the Uneven Colors Even",
        x = "Lentils",
        y = "No. of colors",
@@ -382,7 +382,7 @@ Heatmap_all_evens<-
        x = "Lentils",
        y = "No. of colors",
        color = "all_even") +
-        geom_text(aes(label = sprintf("%.1f%%", all_even * 100)), color = "black", size = 4)+
+        geom_text(aes(label = sprintf("%.1f%%", all_even * 100)), color = "black", size = 3)+
     guides(size= "none")+
   theme_bw()
 
@@ -465,13 +465,27 @@ lm_color_all %>% summary()
 
 ### Data Structure
 
-The simulation created 
+The simulation created a random samples of snack packs, which was proven to be statistically random. We created with "sample_MnM" one sample with specific size and numbers of colors, and then "mega_snack" that create costume samples and check the relevand indicators fot this project.
+
+we I out that:
+
+* the smallest package can barely have one color or even to not have one.
+
+* The more colors there are, the less chance there is for the uneven numbers in colors to be even
+
+* For any medium or bigger package, the probability of one color to be unfairly small (less than $\frac{2}{3}$ than expected) is nearly 0%
 
 ### Main Q: Eating M&M by Two
 
 Although there is no clear pattern to the right M&M package for all the colors to have even count,
 maybe different approach can find a clear reason for more or less couples of M&M.
 
-The general probability of all colors to be even is 4% for small 50g package 2.8% for big 1000g package, and overall 2.8%, which is less than I expected.
+The general probability of all colors to be even in 6 colored pack is 1.5% for small 50g package 2.1% for big 1000g package, and overall 1.5%, which is more than I expected.
+
+For 5 colored pack like Skittles the average is about 2.9%
+
+For 2 colored pack the average is 24.5%, so for most 2 colored marshmallow bag the method of eating by 2 can be relatively available.
 
 ### Summery
+
+To sum it up, for each medium pack the probability of all even colors is 1.4%, or 1 in a 73 packs of 250g. So I might need to change my snack preference to marshmallow if I want to keep this method!
