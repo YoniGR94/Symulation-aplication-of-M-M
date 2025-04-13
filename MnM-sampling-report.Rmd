@@ -83,10 +83,10 @@ sample_MnM<-function(n,x_units,t_colors) #create n bag using sample vector
 ```
 ```{r sample example, error=FALSE, warning=FALSE, echo=FALSE}
 #example
-print("One bag:")
+print("One bag of 100:")
 Create_bag(100,6)
-print("3 bags:")
-sample_MnM(3,10,6) %>% 
+print("3 bags of 100:")
+sample_MnM(3,100,6) %>% 
    `colnames<-`(c(1:6)) %>% 
    `rownames<-`(c("Bag_1","Bag_2","Bag_3")) %>% 
    `colnames<-`(c("Red","Blue","Green", "Orange", "Yellow", "Brown"))
@@ -451,7 +451,7 @@ mega_snack_open<- function(nn,n_unit,n_color)
   res %>% as.data.frame()
   }
 
-mega_snack_2<- mega_snack_open(15,n_unit_op,color_op) %>% 
+mega_snack_2<- mega_snack_open(20,n_unit_op,color_op) %>% 
   mutate(color_No2= n_color %%2 == 0) #check if the number of colors is even
 lm_color<- lm(mega_snack_2$even_count~ mega_snack_2$n_color +mega_snack_2$n_unit)
 lm_color %>% summary()
@@ -460,6 +460,8 @@ lm_color %>% summary()
 lm_color_all<- lm(mega_snack_2$all_even~ mega_snack_2$n_color +mega_snack_2$n_unit+ mega_snack_2$color_No2)
 lm_color_all %>% summary()
 ```
+From the second regression we can suggest that more colors is correlated with 3.3% less probability of all colors even,
+while even numbers of colors is correlated with 7.7% more probability of all colors eve, regardless of any package size.
 
 # Conclusions
 
@@ -467,25 +469,45 @@ lm_color_all %>% summary()
 
 The simulation created a random samples of snack packs, which was proven to be statistically random. We created with "sample_MnM" one sample with specific size and numbers of colors, and then "mega_snack" that create costume samples and check the relevand indicators fot this project.
 
-we I out that:
+We I out that:
 
-* the smallest package can barely have one color or even to not have one.
+* Small packages often lack at least one color, and sometimes contain only one color.
 
-* The more colors there are, the less chance there is for the uneven numbers in colors to be even
+* As the number of colors increases, the chance that all colors have even counts drops significantly.
 
-* For any medium or bigger package, the probability of one color to be unfairly small (less than $\frac{2}{3}$ than expected) is nearly 0%
+* For medium to large packages, the probability of any one color being significantly underrepresented (less than $\frac{2}{3}$ of its expected amount) is near zero.
 
 ### Main Q: Eating M&M by Two
 
 Although there is no clear pattern to the right M&M package for all the colors to have even count,
-maybe different approach can find a clear reason for more or less couples of M&M.
+different approach might find a clear reason for more or less couples of M&M. Here is what I did found:
 
 The general probability of all colors to be even in 6 colored pack is 1.5% for small 50g package 2.1% for big 1000g package, and overall 1.5%, which is more than I expected.
 
 For 5 colored pack like Skittles the average is about 2.9%
 
-For 2 colored pack the average is 24.5%, so for most 2 colored marshmallow bag the method of eating by 2 can be relatively available.
+For 2 colored pack the average is 24.5%, so for 2 colored marshmallow bag this will be the statistics.
 
-### Summery
+### Summary
 
-To sum it up, for each medium pack the probability of all even colors is 1.4%, or 1 in a 73 packs of 250g. So I might need to change my snack preference to marshmallow if I want to keep this method!
+To sum it up, for each medium pack the probability of all even colors is 1.4%, or 1 in a 73 packs of 250g. So I might need to change my snack preference to marshmallow if I want to keep this method.
+
+This project help me implement the method of simulation on a need— as silly as in might be— and check the business question with wider sight in order to understand the hole story.
+
+I applied:
+
+* Simulation logic
+
+* Exploratory analysis
+
+* Hypothesis testing
+
+* Distribution checks
+
+* Outlier detection
+
+* Visualization using 
+
+In addition, I created the infrastructure for similar questions with different parameters to be checked in a reusable, structured way.
+
+
