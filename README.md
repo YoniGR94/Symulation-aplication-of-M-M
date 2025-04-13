@@ -62,3 +62,5 @@ I use approximately 15% AI prompt for these tasks:
 Feel free to fork this repository, suggest improvements, or add new analyses!
 
 Please note- this project is in the editing phase
+
+![](https://img.shields.io/github/commit-activity/m/YoniGR94/Symulation-aplication-of-M-M?label=commited&logo=git&style=plastic)
