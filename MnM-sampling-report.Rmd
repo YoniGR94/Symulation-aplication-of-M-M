@@ -9,11 +9,11 @@ output: pdf_document
 
 ### Objective of Simulation
 
-The goal of this simulation is to test the statistics of M&M and other stacks even Chocolate lentils by color.
+The goal of this simulation is to test the statistics of M&M and other stacks even chocolate lentils by color.
 
 I wanted to know what is the chance of my finishing the package of M&M without mixing any color in one bite, eating them 2 by 2
 
-In addition, here are some BI incite that needed to be checked:
+In addition, here are some BI insights that needed to be checked:
 
 1. What is the probability of M&M packages packaged fairly?
 
@@ -21,11 +21,14 @@ In addition, here are some BI incite that needed to be checked:
 
 3. How does the size of the package or number of colors affect this probability?
 
+
 ### Method
 
-I do not have an inner information of how does (M&M)[https://www.mms.com/en-us] make their delicious snacks nor we know how they make sure each package have fair amount of each color.
+This report explores the randomness and fairness of color distribution in M&M-style candy packs.  
+We simulate hundreds of packages with varying sizes and color counts, then apply statistical analysis  
+to understand how often one might get "balanced" packs — and what impacts those odds.
 
-Therefore, the method I chose is based of simulation of some M&M bags, according to the most common sizes of packages.
+I do not have an inner information of how does (M&M)[https://www.mms.com/en-us] make their delicious snacks nor we know how they make sure each package have fair amount of each color. Therefore, the method I chose is based of simulation of some M&M bags, according to the most common sizes of packages.
 
 Each time we sample x lentils(units of M&M), name them by colors (V1,V2...), and see the results for many packages as a statistic data.
 
@@ -34,6 +37,14 @@ My hypothesis is that the probability of perfect package (aka a package with all
 ### Parameters
 
 Basic parameters:
+
+We define a "pack" as a vector of integers representing the count of each color.  
+Each simulation uses random sampling with replacement to mimic real-world packaging.  
+Key variables:
+
+- `n-color`: Number of distinct colors
+
+- `n-unit`: Total candies in the pack
 
 ```{r}
 n= 800              #numbers of bags per sample
@@ -62,11 +73,19 @@ paste0("The avarage number of lentils per color is ", round(av_per_color,2))
 
 ## General Sample
 
-In order to test the theoretical data, we need to simulate it using customize functions. here are there:
+In order to test the theoretical data, I need to simulate it using customize functions. here are there:
 
-* Create_bag- function to create one snack package for chosen package size and number of colors.
+* `Create_bag`- function to create one snack package for chosen package size and number of colors.
 
-* sample_MnM- function to create n bags from the Create_bag function.
+* `sample_MnM`- function to create n bags from the Create_bag function.
+
+key parameters for `sample_MnM`
+
+- `n`: Number of packages in the sample
+
+- `x_units`: Total candies in each package
+
+- `t_colors`: Number of distinct colors in each package
 
 ```{r sampling functions, error=FALSE, warning=FALSE, echo=F}
 Create_bag<- function(x,tx) #create bag using sample vector
@@ -106,17 +125,17 @@ Now will be creating n bugs of M&M
 
 columns:
 
-1. V1:V6- the number of lentils per color
+1. `V1:V6`- the number of lentils per color
 
-2. even_count- how many evens colors there are
+2. `even_count`- how many evens colors there are
 
-3. even_evens- are the uneven colors even
+3. `even_evens`- are the uneven colors even
 
-4. Variance- variance of lentils per color
+4. `Variance`- variance of lentils per color
 
-5. low_col- sum true if one color's count is lower than $\frac{2}{3}$ of expected value
+5. `low_col`- sum true if one color's count is lower than $\frac{2}{3}$ of expected value
 
-6. min- the lowest color in each row
+6. `min`- the lowest color in each row
 
 here are the first rows:
 
@@ -133,30 +152,31 @@ MnM_sample<-
          min=        apply(across(c(1:6)),1,FUN = min), # lowest value in color
          all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== n_color)
 
-MnM_sample %>% head(6)
+
+
+knitr::kable(MnM_sample %>% head(4), caption = "M&M sample random rows")
 ```
 
-plot the M&M sample sample
+plot the M&M sample summary
 
 ```{r ggplot 1 sample, warning=FALSE, error=FALSE, echo=F}
-print("summary of all colors Distibution:")  #summary of all colors
-
-rbind(
-MnM_sample$Red %>% summary(),
-MnM_sample$Blue %>% summary(),
-MnM_sample$Green %>% summary(),
-MnM_sample$Orange %>% summary(),
-MnM_sample$Yellow %>% summary(),
-MnM_sample$Brown %>% summary()
-) %>% as.data.frame() %>% cbind(sapply(MnM_sample[,1:6],var,na.rm=1)) %>% 
+colors_summary_df<-rbind(
+  MnM_sample$Red %>% summary(),
+  MnM_sample$Blue %>% summary(),
+  MnM_sample$Green %>% summary(),
+  MnM_sample$Orange %>% summary(),
+  MnM_sample$Yellow %>% summary(),
+  MnM_sample$Brown %>% summary()) %>%
+  as.data.frame() %>% cbind(sapply(MnM_sample[,1:6],var,na.rm=1)) %>% 
   rename("Var" ="sapply(MnM_sample[, 1:6], var, na.rm = 1)")
+
+knitr::kable(colors_summary_df, caption = "summary of all colors Distibution")
 
 MnM_sample %>%
   mutate(is.even = even_count %%2 ==0) %>% 
   ggplot(aes(x= even_count, fill= is.even))+
   geom_bar()+
-    geom_text(
-    stat = "count",
+    geom_text(stat = "count",
     aes(label = ..count..),vjust = -0.5)+
   labs(title="Distibution of Eveness of Colors")
 
@@ -167,11 +187,12 @@ MnM_sample %>%
   geom_bar()+labs(title="Distibution of the Red Color")+
   theme(panel.grid = element_line(color = "gray50"))
 ```
+
 ## Statisics Checking of the Simullation
 
 ### Test Expected Value
 
-to see is the $\mu$ of the lentils per color are fair, we will test it per column with t.test for each color.
+to see is the $\mu$ of the lentils per color are fair, I will test it per column with t.test for each color.
 
 Here is the result, none of them bellow 5% P. value
 
@@ -181,18 +202,16 @@ p.value of $H_0: \mu= \frac{n_unit}{n_color}$
 check_mean_hypothesis <- function(data, column_name, X)
   {
   test_result <- t.test(data[[column_name]], mu = X)
-  test_result$p.value
-}
+  test_result$p.value}
 
 columns_to_test <- colnames(MnM_sample[,1:6])
 test_results <- sapply(columns_to_test, function(col) {
-  check_mean_hypothesis(MnM_sample, col, av_per_color)
-})
+  check_mean_hypothesis(MnM_sample, col, av_per_color)})
 
 percent(test_results)
 ```
 
-Now we will do the same checking for 2 samples, to see whether there is correlation between each 2 colors distribution.
+Now I will do the same checking for 2 samples, to see whether there is correlation between each 2 colors distribution.
 
 for each row i and column j,
 1) if i==j, this it the check from before of the expected value to n_unit/n_color
@@ -218,13 +237,15 @@ for (i in 1:num_cols) {
   }
 }
 
-round(as.data.frame(p_value_matrix),4) %>%
+round(as.data.frame(p_value_matrix),3) %>%
   mutate(color_1= rownames(p_value_matrix)) %>% 
   pivot_longer(cols = 1:6, names_to = "color_2", values_to = "t_test") %>% 
   mutate(Reject_H0 = t_test<= 0.05) %>% 
   ggplot(aes(x= color_1, y= color_2))+
-  geom_text(aes(label = t_test * 100,, color = Reject_H0), size = 4)+
-  labs(title="Colors Correlation Map", label = "Reject Ho")+
+  geom_text(aes(label = sprintf("%.1f%%", t_test * 100), color = Reject_H0), size = 4)+
+  labs(title="Colors Correlation Map", color = "Reject Ho",
+       x = "Color 1",
+       y = "Color 2")+
   theme_classic()
 ```
 Now here Is visualization of the actual data per color
@@ -247,11 +268,11 @@ colored_MnM
 
 ### Variance Distribution Checking
 
-We know that the distribution of variance is approximately Gamma distribution:
+I know that the distribution of variance is approximately Gamma distribution:
 
 $$f(x) = \frac{1}{\Gamma(\alpha)\theta^\alpha} x^{\alpha-1}e^{-x/\theta}$$
 
-We can see that the variance distribution is Gamma like with shape and rate as seen below
+I can see that the variance distribution is Gamma like with shape and rate as seen below
 
 ```{r, warning=FALSE, error=FALSE, echo=F}
 gamma_params <- fitdistr(MnM_sample$Variance, "gamma")$estimate
@@ -261,17 +282,18 @@ scale_est <- 1 / gamma_params["rate"] #using Scale= 1/Rate
 
 MnM_sample %>% #plot density
   ggplot(aes(x = Variance)) +
-  geom_density(fill= "skyblue", alpha= 0.8) +
+  geom_density(fill= "skyblue3", alpha= 0.8) +
   geom_vline(xintercept = mean(MnM_sample$Variance), color = "blue", size=1) +
   geom_vline(xintercept = scale_est*shape_est, color = "red", linetype = "dashed", size=1) +
   stat_function(fun = dgamma, args = list(shape = shape_est, scale = scale_est), 
-                color = "red", alpha= 0.7) +
+                color = "red3", alpha= 0.7) +
   labs(title = "Density Plot with Gamma Distribution",
        x = "Variance",
        y = "") +
   scale_y_continuous(label=scales::label_percent(.1)) + 
   theme_minimal()
 ```
+
 ### Are All Even in the Sample?
 
 ```{r are all even, warning=FALSE, error=FALSE, echo=F}
@@ -281,7 +303,7 @@ MnM_sample %>%
   count(count_even) %>%
   ggplot(aes(x = factor(count_even), y = n, fill = n)) +  # make x categorical
   geom_bar(stat = "identity", color= "grey20") +
-  scale_fill_gradient(low = "skyblue", high = "green3") +
+  scale_fill_gradient(low = "skyblue", high = "green2") +
   labs(
     title = "Count of Even Colors per Row",
     x = "No. Even Rows",
@@ -293,7 +315,7 @@ MnM_sample %>%
 
 ### n*m types of snacks
 
-I will create a function that create sample for each number of colors and package size we want, and then calculate some interesting parameters
+I will create a function that create sample for each number of colors and package size I want, and then calculate some interesting parameters
 
 ```{r function multy-sample, warning=FALSE, error=FALSE, echo=F}
 mega_snack<- function(nn,n_unit,n_color)
@@ -322,7 +344,6 @@ mega_snack<- function(nn,n_unit,n_color)
              all_even=    even_count >= 1,
              low_color=   rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1
             )
-    #return(small_sample)
     res[i,3:8]<- c(
       mean(small_sample$even_count),
       mean(small_sample$even_evens),
@@ -336,21 +357,24 @@ mega_snack<- function(nn,n_unit,n_color)
 }
 ```
 
+I will make the multiple sample. parameters:
 
 ```{r Data for multiple sample, warning=FALSE, error=FALSE}
-color_op<- 2:8
-grams_op<- c(25,45,150,250,330,500,750,1000)
-n_unit_op<- grams_op/gram
-nn=800
+n_color<- 2:8 #Number of distinct colors in each package option
+grams_op<- c(25,45,150,250,330,500,750,1000) #Weight of each package option
+n_unit_op<- grams_op/gram #Total candies in each package option
+nn<- 800 #Number of packages in the sample
 ```
 
-We will make the multiple sample. Here is some random rows:
-
+Here is some random rows:
 ```{r baking multiple sample, warning=FALSE, error=FALSE, echo= F}
 mega_snack_1<-
-  mega_snack(nn,n_unit_op,color_op) %>%
+  mega_snack(nn,n_unit_op,n_color) %>%
   mutate(n_unit= round(n_unit,1))
-mega_snack_1 %>% sample_n(5)
+
+knitr::kable(mega_snack_1 %>% sample_n(5) %>% 
+             mutate_at(3:7, round, 3),
+             caption = "Multiple sample example rows")
 ```
 
 ## Deep Insight on the Data
@@ -366,6 +390,7 @@ mega_snack_1 %>%
        x= "Lentils",
        y= "No. of colors",
        fill= "even count") +
+    geom_text(aes(label = round(even_count,2)), color = "coral4", size = 4)+
   guides(colour= "none")+
   theme_minimal()
 ```
@@ -375,8 +400,8 @@ mega_snack_1 %>%
 mega_snack_1 %>%
   ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_evens )) +
   geom_tile(color= "black") +
-  scale_fill_gradient(high = "deepskyblue", low = "red")+
-  labs(title = "does the Uneven Colors Even",
+  scale_fill_gradient(high = "deepskyblue", low = "coral4")+
+  labs(title = "Does the Uneven Colors Even",
        x = "Lentils",
        y = "No. of colors",
        fill = "even evens") +
@@ -395,7 +420,7 @@ Heatmap_all_evens<-
   labs(title = "Were all Colors Evens",
        x = "Lentils",
        y = "No. of colors",
-       color = "all_even") +
+       color = "all even") +
         geom_text(aes(label = sprintf("%.1f%%", all_even * 100)), color = "black", size = 3)+
     guides(size= "none")+
   theme_bw()
@@ -413,13 +438,14 @@ mega_snack_1 %>%
   ggplot(aes(x = factor(round(n_unit, 1)), y = n_color, fill = low_color))+
   geom_tile(color = "white") +
     geom_text(aes(label = sprintf("%.2f%%", low_color * 100)), color = "black", size = 4)+
-  scale_fill_gradient(low = "darkolivegreen3", high = "red3",labels = scales::percent)+
+  scale_fill_gradient(low = "darkolivegreen3", high = "purple3",labels = scales::percent)+
   labs(title = "Chance of Less Than 66% Color in Package",
        x = "Lentils",
        y = "No. of colors",
        fill = "low color")+
   theme_minimal()
 ```
+Here we can see the smallest % of Lentils in one color as seen in my sample:
 
 ```{r smallest color vs expected, warning=FALSE, error=FALSE, echo=F}
 mega_snack_1 %>% 
@@ -465,31 +491,38 @@ mega_snack_open<- function(nn,n_unit,n_color)
   res %>% as.data.frame()
   }
 
-mega_snack_2<- mega_snack_open(20,n_unit_op,color_op) %>% 
+mega_snack_2<- mega_snack_open(20,n_unit_op,n_color) %>% 
   mutate(color_No2= n_color %%2 == 0) #check if the number of colors is even
+
 lm_color<- lm(mega_snack_2$even_count~ mega_snack_2$n_color +mega_snack_2$n_unit)
 lm_color %>% summary()
-
 
 lm_color_all<- lm(mega_snack_2$all_even~ mega_snack_2$n_color +mega_snack_2$n_unit+ mega_snack_2$color_No2)
 lm_color_all %>% summary()
 ```
-seeing  the $2_{nd}$ regression we can suggest that more colors is correlated with 3.3% less probability of all colors even,
+
+Seeing  the $2_{nd}$ regression we can suggest that more colors is correlated with 3.3% less probability of all colors even,
 while even numbers of colors is correlated with 7.7% more probability of all colors eve, regardless of any package size.
 
 # Conclusions
 
 ### Data Structure
 
-The simulation created a random samples of snack packs, which was proven to be statistically random. We created with "sample_MnM" one sample with specific size and numbers of colors, and then "mega_snack" that create costume samples and check the relevand indicators fot this project.
+The simulation created a random samples of snack packs, which was proven to be statistically random with known $\mu$ and $\sigma^2$. I created one sample with specific size and numbers of colors using "sample_MnM", and costume multiple samples using "mega_snack". Then, I check the relevand indicators fot this project.
 
-We I out that:
+I found out that:
 
 * Small packages often lack at least one color, and sometimes contain only one color.
 
 * As the number of colors increases, the chance that all colors have even counts drops significantly.
 
 * For medium to large packages, the probability of any one color being significantly underrepresented (less than $\frac{2}{3}$ of its expected amount) is near zero.
+
+suggestion for any random sampler factory (like candies, lego, toys):
+
+1. Smaller packages need more diversity check
+
+2. Althernatively, I would recomand calculate the amount of each type in small packages
 
 ### Main Q: Eating M&M by Two
 
@@ -502,11 +535,23 @@ For 5 colored pack like Skittles the average is about 2.9%
 
 For 2 colored pack the average is 24.5%, so for 2 colored marshmallow bag this will be the statistics.
 
+See all here:
+```{r summary knitr, warning=FALSE, error=FALSE, echo=F}
+summary_table<-
+  mega_snack_1 %>%
+  rename(Colors= n_color) %>% 
+  group_by(Colors) %>% 
+  summarise('All Even Percent'= round(mean(all_even)*100,2) ,
+            .groups = 'drop') %>%
+  as.data.frame()
+knitr::kable(summary_table, caption = "Probability of All Colors Even by Pack Colors Number")
+```
+
 ### Summary
 
 To sum it up, for each medium pack the probability of all even colors is 1.4%, or 1 in a 73 packs of 250g. So I might need to change my snack preference to marshmallow if I want to keep this method.
 
-This project help me implement the method of simulation on a need— as silly as in might be— and check the business question with wider sight in order to understand the hole story.
+This project allowed me to implement simulation methods in response to a real (albeit silly) question, and evaluate it statistically from end to end..
 
 I applied:
 
