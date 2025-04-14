@@ -14,7 +14,7 @@ Look for the result here:
 
 [RMD code file](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.Rmd)
 
-for now, you can see the result: Probability of all colors of snack package be in couples by size of package and number of colors:
+For now, you can see the result: Probability of all colors of snack package be in couples by size of package and number of colors:
 
 <img src="https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/Heatmap_all_evens.png?raw=true" width="600"/>
 
@@ -28,6 +28,10 @@ for now, you can see the result: Probability of all colors of snack package be i
 
 ✅ The interesting Question: can you eat each color two by two all the way to the end?
 
+
+Here is the distribution of each color of M&M from my simulation
+
+<img src="https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/colored_M&M.png?raw=true" width="600"/>
 
 ### 🔍 Key Questions Explored
 

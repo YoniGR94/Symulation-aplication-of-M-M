@@ -24,22 +24,30 @@ In addition, here are some BI incite that needed to be checked:
 ### Method
 
 I do not have an inner information of how does (M&M)[https://www.mms.com/en-us] make their delicious snacks nor we know how they make sure each package have fair amount of each color.
+
 Therefore, the method I chose is based of simulation of some M&M bags, according to the most common sizes of packages.
 
 Each time we sample x lentils(units of M&M), name them by colors (V1,V2...), and see the results for many packages as a statistic data.
 
-my hypothesis is that the probability of perfect package (aka a package with all colors number been even) is very small, at least for a standard 6 colors pack.
+My hypothesis is that the probability of perfect package (aka a package with all colors number been even) is very small, at least for a standard 6 colors pack.
 
 ### Parameters
 
 Basic parameters:
 
+```{r}
+n= 800              #numbers of bags per sample
+n_color= 6          #unique colors of M&M
+gram= 0.91          #weight of one M&M
+bag_g= 250          #common weight of M&M package
+n_unit= bag_g/gram  #M&M per packagenm,
+```
 ```{r packages, message=FALSE, warning=FALSE, echo=FALSE}
 library(tidyverse)
 library(MASS) #calculate distribution parameters
 library(scales)
 ```
-```{r parameters, error=FALSE, warning=FALSE}
+```{r parameters, error=FALSE, warning=FALSE, echo=FALSE}
 #parameters
 n<- 800            #numbers of bags per sample
 n_color<- 6         #unique colors of M&M
@@ -50,7 +58,7 @@ av_per_color= n_unit/n_color
 paste0("The avarage number of lentils per color is ", round(av_per_color,2))
 ```
 
-# Creating of the Sample
+# Creating the Sample
 
 ## General Sample
 
@@ -125,9 +133,7 @@ MnM_sample<-
          min=        apply(across(c(1:6)),1,FUN = min), # lowest value in color
          all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== n_color)
 
-
 MnM_sample %>% head(6)
-
 ```
 
 plot the M&M sample sample
@@ -151,8 +157,8 @@ MnM_sample %>%
   geom_bar()+
     geom_text(
     stat = "count",
-    aes(label = ..count..),vjust = -0.5
-  )+labs(title="Distibution of Eveness of Colors")
+    aes(label = ..count..),vjust = -0.5)+
+  labs(title="Distibution of Eveness of Colors")
 
 MnM_sample %>%
   mutate(is.even = Red %%2 ==0) %>% 
@@ -169,6 +175,7 @@ to see is the $\mu$ of the lentils per color are fair, we will test it per colum
 
 Here is the result, none of them bellow 5% P. value
 
+p.value of $H_0: \mu= \frac{n_unit}{n_color}$
 ```{r t test mu, echo=FALSE}
 #test mu is av_per_color
 check_mean_hypothesis <- function(data, column_name, X)
@@ -214,28 +221,35 @@ for (i in 1:num_cols) {
 round(as.data.frame(p_value_matrix),4) %>%
   mutate(color_1= rownames(p_value_matrix)) %>% 
   pivot_longer(cols = 1:6, names_to = "color_2", values_to = "t_test") %>% 
-  mutate(reject_H0 = t_test<= 0.05) %>% 
+  mutate(Reject_H0 = t_test<= 0.05) %>% 
   ggplot(aes(x= color_1, y= color_2))+
-  geom_text(aes(label = t_test * 100,, color = reject_H0), size = 4)+
-  labs(title="Colors Correlation Map")
+  geom_text(aes(label = t_test * 100,, color = Reject_H0), size = 4)+
+  labs(title="Colors Correlation Map", label = "Reject Ho")+
+  theme_classic()
 ```
 Now here Is visualization of the actual data per color
 
-```{r plot 2 colors, warning=FALSE, error=FALSE, echo=F}
-MnM_sample %>%
-    pivot_longer(cols = 1:6, names_to = "Variable", values_to = "pieces") %>%
-    ggplot(aes(fill=Variable ,x= pieces))+
-  geom_histogram(position = "identity")+
-    scale_fill_manual(values = c("blue", "chocolate4","green4", "orange","red4", "yellow3"))+
+```{r plot 2 colors, warning=FALSE, error=FALSE, echo=F, message= F}
+colored_MnM<- MnM_sample %>%
+    pivot_longer(cols = 1:6, names_to = "Color", values_to = "pieces") %>%
+    ggplot(aes(fill=Color ,x= pieces))+
+  geom_histogram(position = "identity", alpha= 0.8)+
+    scale_fill_manual(values = c("blue", "chocolate4","green4", "orange3","red4", "yellow2"))+
   theme(panel.grid = element_line(color = "grey50",
-                                  size = 0.75))+facet_wrap(~Variable)
+                                  size = 0.75))+facet_wrap(~Color)
+
+ggsave(colored_MnM, 
+       filename = "colored_M&M.png",
+       height = 4, width = 5, units = "in")
+
+colored_MnM
 ```
 
 ### Variance Distribution Checking
 
 We know that the distribution of variance is approximately Gamma distribution:
 
-$$f(x) = \frac{1}{(\Gamma(\alpha)\theta^\alpha)} x^{\alpha-1}e^{-x/\theta}$$
+$$f(x) = \frac{1}{\Gamma(\alpha)\theta^\alpha} x^{\alpha-1}e^{-x/\theta}$$
 
 We can see that the variance distribution is Gamma like with shape and rate as seen below
 
@@ -273,7 +287,7 @@ MnM_sample %>%
     x = "No. Even Rows",
     y = "Packages"
   )+
-    geom_text(aes(label = n), color = "black", size = 4)+
+    geom_text(aes(label = n), color = "black", size = 4,vjust = -0.5)+
   theme_minimal()
 ```
 
@@ -349,9 +363,9 @@ mega_snack_1 %>%
   geom_tile(color= "black") +
   scale_fill_gradient(low = "orange", high = "skyblue")+
   labs(title = "avarage even count percent by number of colors and units",
-       x = "Lentils",
-       y = "No. of colors",
-       fill = "even_count") +
+       x= "Lentils",
+       y= "No. of colors",
+       fill= "even count") +
   guides(colour= "none")+
   theme_minimal()
 ```
@@ -460,7 +474,7 @@ lm_color %>% summary()
 lm_color_all<- lm(mega_snack_2$all_even~ mega_snack_2$n_color +mega_snack_2$n_unit+ mega_snack_2$color_No2)
 lm_color_all %>% summary()
 ```
-From the second regression we can suggest that more colors is correlated with 3.3% less probability of all colors even,
+seeing  the $2_{nd}$ regression we can suggest that more colors is correlated with 3.3% less probability of all colors even,
 while even numbers of colors is correlated with 7.7% more probability of all colors eve, regardless of any package size.
 
 # Conclusions
@@ -506,7 +520,7 @@ I applied:
 
 * Outlier detection
 
-* Visualization using 
+* Visualization using R
 
 In addition, I created the infrastructure for similar questions with different parameters to be checked in a reusable, structured way.
 
