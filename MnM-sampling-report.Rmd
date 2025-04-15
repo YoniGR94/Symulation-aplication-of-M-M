@@ -57,6 +57,7 @@ n_unit= bag_g/gram  #M&M per packagenm,
 library(tidyverse)
 library(MASS) #calculate distribution parameters
 library(scales)
+library(patchwork) #combine 2 plots
 ```
 ```{r parameters, error=FALSE, warning=FALSE, echo=FALSE}
 #parameters
@@ -145,21 +146,20 @@ MnM_sample<- sample_MnM(n,n_unit,n_color) %>%
 
 MnM_sample<-
   MnM_sample %>% as_data_frame() %>% 
-  mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0)), #how many evens colors there are
+  mutate(even_count= rowSums(across(c(1:6)  , ~ .x %% 2 == 0)), #how many evens colors there are
          even_evens= rowSums(across(c(1:6), ~ .x %% 2 == 1)) %% 2 ==0, #are the uneven colors even
          low_col=    rowSums(across(c(1:6), ~ .x <= 0.66*av_per_color)),
          Variance=    apply(across(c(1:6)), 1, var), #var of candy per color/ type
          min=        apply(across(c(1:6)),1,FUN = min), # lowest value in color
-         all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== n_color)
-
-
+         all_even=   even_count== 6
+         )
 
 knitr::kable(MnM_sample %>% head(4), caption = "M&M sample random rows")
 ```
 
-plot the M&M sample summary
+Plot the M&M sample summary
 
-```{r ggplot 1 sample, warning=FALSE, error=FALSE, echo=F}
+```{r ggplot colors summary df, warning=FALSE, error=FALSE, echo=F}
 colors_summary_df<-rbind(
   MnM_sample$Red %>% summary(),
   MnM_sample$Blue %>% summary(),
@@ -171,32 +171,49 @@ colors_summary_df<-rbind(
   rename("Var" ="sapply(MnM_sample[, 1:6], var, na.rm = 1)")
 
 knitr::kable(colors_summary_df, caption = "summary of all colors Distibution")
+```
 
-MnM_sample %>%
+Here we can see the distribution of all colors to be even and of one example color (red)
+
+```{r ggplot all colors and red, warning=FALSE, error=FALSE, echo=F}
+
+red_1<- MnM_sample %>%
   mutate(is.even = even_count %%2 ==0) %>% 
   ggplot(aes(x= even_count, fill= is.even))+
+  scale_fill_manual(values = c("darkorange3", "chocolate4"))+
   geom_bar()+
     geom_text(stat = "count",
     aes(label = ..count..),vjust = -0.5)+
-  labs(title="Distibution of Eveness of Colors")
-
-MnM_sample %>%
+  labs(title="Distibution of Eveness of Colors",
+       x= "count of evens",
+       y= "count",
+       fill= "is even"
+       )
+  
+red_2<- MnM_sample %>%
   mutate(is.even = Red %%2 ==0) %>% 
   ggplot(aes(x= Red, fill= is.even))+
   scale_fill_manual(values = c("red", "red4"))+
-  geom_bar()+labs(title="Distibution of the Red Color")+
+  geom_bar()+
+  labs(title="Distibution of the Red Color",
+       x= "No. of red",
+       y= "count",
+       fill= "is even")+
   theme(panel.grid = element_line(color = "gray50"))
+
+red_1+red_2
 ```
 
 ## Statisics Checking of the Simullation
 
 ### Test Expected Value
 
-to see is the $\mu$ of the lentils per color are fair, I will test it per column with t.test for each color.
+In order to see is the $\mu$ of the lentils per color are fair, I will test it per column with t.test for each color.
 
 Here is the result, none of them bellow 5% P. value
 
-p.value of $H_0: \mu= \frac{n_unit}{n_color}$
+p.value of $H_0: \mu= \frac{n-unit}{n-color}$
+
 ```{r t test mu, echo=FALSE}
 #test mu is av_per_color
 check_mean_hypothesis <- function(data, column_name, X)
@@ -213,8 +230,10 @@ percent(test_results)
 
 Now I will do the same checking for 2 samples, to see whether there is correlation between each 2 colors distribution.
 
-for each row i and column j,
+for each row i and column j
+
 1) if i==j, this it the check from before of the expected value to n_unit/n_color
+
 2) if i!=j, this is two samples test of same expected value hypothesis
 
 ```{r P.value test, echo=FALSE}
@@ -246,7 +265,11 @@ round(as.data.frame(p_value_matrix),3) %>%
   labs(title="Colors Correlation Map", color = "Reject Ho",
        x = "Color 1",
        y = "Color 2")+
-  theme_classic()
+  theme_classic()+
+    theme(
+  panel.grid.major.y = element_line(color = "grey80"),
+  panel.grid.major.x = element_line(color = "grey80")
+    )
 ```
 Now here Is visualization of the actual data per color
 
@@ -256,7 +279,7 @@ colored_MnM<- MnM_sample %>%
     ggplot(aes(fill=Color ,x= pieces))+
   geom_histogram(position = "identity", alpha= 0.8)+
     scale_fill_manual(values = c("blue", "chocolate4","green4", "orange3","red4", "yellow2"))+
-  theme(panel.grid = element_line(color = "grey50",
+  theme(panel.grid = element_line(color = "grey70",
                                   size = 0.75))+facet_wrap(~Color)
 
 ggsave(colored_MnM, 
@@ -340,7 +363,6 @@ mega_snack<- function(nn,n_unit,n_color)
              #var of candy per color/ type
              smallest_col=apply(across(c(1:n_color)), 1, min),
              #lowest value in color
-             #all_even=    rowSums(across(c(1:n_color), ~ .x %% 2 == 0)) >= res[i,2],
              all_even=    even_count >= 1,
              low_color=   rowSums(across(c(1:n_color), ~ .x <= low_color ))>=1
             )
@@ -379,7 +401,7 @@ knitr::kable(mega_snack_1 %>% sample_n(5) %>%
 
 ## Deep Insight on the Data
 
-here are some insights:
+Here are some insights:
 
 ```{r hitmap, warning=FALSE, error=FALSE, echo=F}
 mega_snack_1 %>%
@@ -396,22 +418,33 @@ mega_snack_1 %>%
 ```
 
 
-```{r hitmap_2, warning=FALSE, error=FALSE, echo=F}
+```{r hitmap_2, warning=FALSE, message=F,error=FALSE, echo=F}
 mega_snack_1 %>%
-  ggplot(aes(x = factor((round( n_unit,1) )), y = factor(n_color ), fill = even_evens )) +
-  geom_tile(color= "black") +
-  scale_fill_gradient(high = "deepskyblue", low = "coral4")+
-  labs(title = "Does the Uneven Colors Even",
-       x = "Lentils",
-       y = "No. of colors",
-       fill = "even evens") +
-  geom_text(aes(label = round(even_evens,2)), color = "black", size = 4)+
-  theme_minimal()
+  ggplot(aes(x = n_unit, y = even_evens, group = n_color, color = n_color)) +
+  geom_line(linewidth = 1.2) +
+  scale_color_gradientn(
+    colors = c("deepskyblue","deepskyblue3" ,"grey60", "salmon2", "red"),
+    limits = c(1, 8),
+    breaks = 1:8,
+    guide = guide_colorbar(title = "colors")
+  )+
+  labs(
+    title = "Does the Uneven Colors Even",
+    x = "Lentils",
+    y = "No. of colors"
+  )+
+  guides(colour = guide_legend(reverse=T))+
+  theme_minimal()+
+  theme(
+  panel.grid.major.y = element_line(color = "grey65"),
+  panel.grid.minor.y = element_line(color = "grey80"),
+  panel.grid.major.x = element_line(color = "grey80")   # optional, if you want to keep it clean
+)
 ```
 
 Here is probability of all even, and whether there is pattern.
 
-```{r ggplot all even, warning=FALSE, error=FALSE, echo=F}
+```{r ggplot all even, warning=FALSE, message=F,error=FALSE, echo=F}
 Heatmap_all_evens<-
   mega_snack_1 %>%
   ggplot(aes(x = as.factor(round( n_unit,1) ), y = n_color , color = all_even)) +
