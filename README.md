@@ -2,7 +2,9 @@
 
 ### 🍫🍬 M&M Package Simulation
 
+
 🔴🟡🟠🟢🔵🟤
+
 
 This repository contains a data simulation of M&M packages, analyzing the distribution of colors and various statistical properties.
 
@@ -10,9 +12,9 @@ The goal is to explore simulation creation and identify potential biases or anom
 
 Look for the result here:
 
-[Presentation PDF](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.pdf)
+* [**Presentation MD**](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.md)
 
-[RMD code file](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.Rmd)
+* [**RMD code file**](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.Rmd)
 
 For now, you can see the result: Probability of all colors of snack package be in couples by size of package and number of colors:
 
@@ -24,7 +26,7 @@ For now, you can see the result: Probability of all colors of snack package be i
 
 ✅ Statistical analysis (mean, variance, hypothesis testing)
 
-✅ visualizations to highlight trends
+✅ Visualizations to highlight trends
 
 ✅ The interesting Question: can you eat each color two by two all the way to the end?
 
@@ -64,7 +66,5 @@ I use approximately 15% AI prompt for these tasks:
 ### 🤝 Contributions
 
 Feel free to fork this repository, suggest improvements, or add new analyses!
-
-Please note- this project is in the editing phase
 
 ![](https://img.shields.io/github/commit-activity/m/YoniGR94/Symulation-aplication-of-M-M?label=commited&logo=git&style=plastic)
