@@ -1,7 +1,7 @@
-My M&M OCD
+Statistical Analysis of Random Distribution in M&M Packages
 ================
 Yoni
-17 04, 2025
+18 04, 2025
 
 # Intro
 
@@ -18,15 +18,15 @@ investigates:
 3.  How do the number of candies and available colors impact that
     probability?
 
-As a chocolate fan, I’ve always wondered:
+while seeing some chocolate packages, I wondered:
 
-    *  Can I finish a pack of M&Ms eating two at a time, without ever mixing colors in a bite?
+      **Can I finish a pack of M&M eating two at a time, without ever mixing colors in a bite?**
 
 This playful question leads to a deeper statistical exploration of
 random sampling, distribution fairness, and packaging quality in candy
 production.
 
-### Method
+### Methodology
 
 Since production data from [M&M](https://www.mms.com/en-us) isn’t
 publicly available, I simulate packages based on common retail sizes and
@@ -36,11 +36,17 @@ times to analyze statistical properties across “virtual” packages.
 
 Through this approach, I estimate the probability of:
 
-1.  Getting a “perfect” pack (equal counts for each color)
+1.  Getting a perfect pack (i.e., equal counts of each color).
 
-2.  Receiving a pack missing at least one color
+2.  Receiving a pack missing at least one color.
 
-3.  Seeing how these probabilities shift with pack size or color variety
+3.  Seeing how these probabilities change with pack size or number of
+    available colors.
+
+My hypothesis is that perfectly balanced packs are extremely rare,
+especially when six colors or more are involved. Larger packs may
+contain all colors more consistently but still tend to be uneven in
+distribution.
 
 ### Parameters
 
@@ -62,7 +68,7 @@ n= 800              #numbers of bags per sample
 n_color= 6          #unique colors of M&M
 gram= 0.91          #weight of one M&M
 bag_g= 250          #common weight of M&M package
-n_unit= bag_g/gram  #M&M per packagenm,
+n_unit= bag_g/gram  #M&M per packag
 ```
 
     ## [1] "The avarage number of lentils per color is 45.8"
@@ -92,14 +98,14 @@ key parameters for `sample_MnM`
     ## [1] "One bag of 100:"
 
     ##       1  2  3  4  5  6
-    ## [1,] 17 20 15 13 16 20
+    ## [1,] 14 17 13 24 15 17
 
     ## [1] "3 bags of 100:"
 
     ##       Red Blue Green Orange Yellow Brown
-    ## Bag_1  21   10    17     17     18    17
-    ## Bag_2  17    9    14     20     24    16
-    ## Bag_3  17   22    19     17     18     8
+    ## Bag_1  18   18    17     17     15    15
+    ## Bag_2  26   14    14     15     19    13
+    ## Bag_3  21   15    20     13     15    16
 
 ## Preview Graph
 
@@ -126,10 +132,10 @@ here are the first rows:
 
 | Red | Blue | Green | Orange | Yellow | Brown | even_count | even_evens | low_col | Variance | min | all_even |
 |---:|---:|---:|---:|---:|---:|---:|:---|---:|---:|---:|:---|
-| 40 | 52 | 50 | 51 | 38 | 43 | 4 | TRUE | 0 | 37.07 | 38 | FALSE |
-| 51 | 54 | 52 | 38 | 44 | 35 | 4 | TRUE | 0 | 62.67 | 35 | FALSE |
-| 46 | 37 | 48 | 42 | 43 | 58 | 4 | TRUE | 0 | 50.67 | 37 | FALSE |
-| 54 | 28 | 53 | 45 | 48 | 46 | 4 | TRUE | 1 | 88.27 | 28 | FALSE |
+| 46 | 53 | 48 | 50 | 37 | 41 | 3 | FALSE | 0 | 34.97 | 37 | FALSE |
+| 37 | 53 | 46 | 46 | 53 | 39 | 2 | TRUE | 0 | 45.47 | 37 | FALSE |
+| 41 | 47 | 45 | 47 | 52 | 43 | 1 | FALSE | 0 | 14.57 | 41 | FALSE |
+| 47 | 35 | 48 | 52 | 56 | 37 | 3 | FALSE | 0 | 68.57 | 35 | FALSE |
 
 M&M sample random rows
 
@@ -137,12 +143,12 @@ I summarized the sample by color bellow
 
 |        | Min. | 1st Qu. | Median |     Mean | 3rd Qu. | Max. |   Var |
 |:-------|-----:|--------:|-------:|---------:|--------:|-----:|------:|
-| Red    |   29 |      42 |     46 | 45.86125 |      50 |   67 | 33.56 |
-| Blue   |   27 |      42 |     46 | 45.66000 |      50 |   65 | 36.47 |
-| Green  |   30 |      42 |     46 | 45.79500 |      50 |   70 | 39.29 |
-| Orange |   28 |      42 |     46 | 45.91250 |      50 |   64 | 37.53 |
-| Yellow |   28 |      42 |     46 | 45.78000 |      50 |   64 | 36.34 |
-| Brown  |   28 |      42 |     45 | 45.49875 |      50 |   63 | 35.81 |
+| Red    |   28 |      42 |     46 | 46.13625 |      50 |   65 | 38.67 |
+| Blue   |   29 |      41 |     45 | 45.56125 |      50 |   68 | 36.04 |
+| Green  |   27 |      41 |     46 | 45.84125 |      50 |   65 | 36.90 |
+| Orange |   27 |      42 |     46 | 45.76500 |      50 |   65 | 36.95 |
+| Yellow |   27 |      42 |     46 | 45.97625 |      50 |   66 | 39.84 |
+| Brown  |   28 |      41 |     45 | 45.21750 |      49 |   72 | 38.19 |
 
 summary of all colors Distibution
 
@@ -162,8 +168,8 @@ Here is the result, none of them bellow 5% P. value
 
 p.value of $H_0: \mu= \frac{n-unit}{n-color}$
 
-    ##      Red     Blue    Green   Orange   Yellow    Brown 
-    ## "71.90%" "55.04%" "97.32%" "56.42%" "97.18%" "17.26%"
+    ##    Red   Blue  Green Orange Yellow  Brown 
+    ##  "11%"  "29%"  "80%"  "92%"  "40%"   "1%"
 
 Now I will do the same checking for 2 samples, to see whether there is
 correlation between each 2 colors distribution.
@@ -190,9 +196,9 @@ $$f(x) = \frac{1}{\Gamma(\alpha)\theta^\alpha} x^{\alpha-1}e^{-x/\theta}$$
 I can see that the variance distribution is Gamma like with shape and
 rate as seen below
 
-    ## [1] "The parameters of the gamma shaped variance is shape 2.464 and scale 17.759"
+    ## [1] "The parameters of the gamma shaped variance is shape 2.288 and scale 19.825"
 
-![](MnM-sampling-report_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](MnM-sampling-report_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
 ### Are All Even in the Sample?
 
@@ -209,22 +215,22 @@ I will make the multiple sample. parameters:
 n_color<- 2:8 #Number of distinct colors in each package option
 grams_op<- c(25,45,150,250,330,500,750,1000) #Weight of each package option
 n_unit_op<- grams_op/gram #Total candies in each package option
-nn<- 800 #Number of packages in the sample
+nn<- 1000 #Number of packages in the sample
 ```
 
 Here is some random rows:
 
 | n_unit | n_color | even_count | even_evens | var_col | all_even | low_color | smallest_col |
 |-------:|--------:|-----------:|-----------:|--------:|---------:|----------:|-------------:|
-|  164.8 |       7 |      0.499 |      0.071 |  22.837 |    0.010 |     0.069 |           10 |
-|   27.5 |       4 |      0.519 |      0.125 |   7.151 |    0.075 |     0.285 |            0 |
-|   27.5 |       5 |      0.495 |      0.096 |   5.446 |    0.024 |     0.336 |            0 |
-|   27.5 |       6 |      0.498 |      0.082 |   4.332 |    0.010 |     0.544 |            0 |
-| 1098.9 |       2 |      0.502 |      0.271 | 535.494 |    0.272 |     0.000 |          497 |
+|  164.8 |       5 |      0.492 |      0.103 |  31.608 |    0.031 |     0.018 |           16 |
+|   27.5 |       8 |      0.499 |      0.066 |   3.791 |    0.005 |     0.529 |            0 |
+|  362.6 |       8 |      0.488 |      0.061 |  50.216 |    0.003 |     0.018 |           23 |
+|  549.5 |       3 |      0.489 |      0.172 | 173.994 |    0.126 |     0.000 |          150 |
+|  164.8 |       3 |      0.507 |      0.166 |  51.614 |    0.129 |     0.001 |           33 |
 
 Multiple sample example rows
 
-### 🔬Deep Insight on the Data
+### Deep Insight on the Data
 
 Here are some insights:
 
@@ -251,10 +257,11 @@ relatively even.
 ### Using Regression for Correlation Check
 
 I wanted to see if there is statistic correlation of the number of
-distinct colors of package size to the probability of all colors been
-even. as a result, I chose to check this claim with regression.
-Furthermore, I did the same regression adding another potential
-correlated parameter: the evenness of the number of distinct colors.
+distinct colors of package size to the probability of all colors have
+equal counts of each color. as a result, I chose to check this claim
+with regression. Furthermore, I did the same regression adding another
+potential correlated parameter: the evenness of the number of distinct
+colors.
 
     ## 
     ## ==============================================
@@ -263,34 +270,27 @@ correlated parameter: the evenness of the number of distinct colors.
     ##                             all_even          
     ##                        (1)            (2)     
     ## ----------------------------------------------
-    ## n_color              -19.195        -9.645    
-    ##                    (1,538.969)     (806.794)  
+    ## n_color              -19.010        -9.560    
+    ##                    (1,000.750)     (528.484)  
     ##                                               
     ## n_unit                -0.001        -0.001    
     ##                      (0.001)        (0.001)   
     ##                                               
-    ## color_No2                           11.589    
-    ##                                   (4,341.690) 
+    ## color_No2                           11.228    
+    ##                                   (2,490.292) 
     ##                                               
-    ## Constant              37.414         6.725    
-    ##                    (3,077.938)    (4,904.858) 
+    ## Constant              37.280         7.151    
+    ##                    (2,001.501)    (2,904.466) 
     ##                                               
     ## ----------------------------------------------
-    ## Observations          1,320          1,320    
-    ## Log Likelihood       -61.974        -61.974   
-    ## Akaike Inf. Crit.    129.949        131.949   
+    ## Observations          1,620          1,620    
+    ## Log Likelihood       -103.586      -103.586   
+    ## Akaike Inf. Crit.    213.173        215.173   
     ## ==============================================
     ## Note:              *p<0.1; **p<0.05; ***p<0.01
 
-As you can see, there is a strong correlation negative of the number of
-colors to probability of all colors to be even, as expected. In
-addition, we find out that if the number of colors is even, the
-probability of all distinct colors to be even increase.
-
-Seeing the $2_{nd}$ regression we can suggest that more colors is
-correlated with 1.3% less probability of all colors even, while even
-numbers of colors is correlated with 4.7% more probability of all colors
-eve, regardless of any package size.
+As you can see, there is no statistic clear correlation of the number of
+colors to probability of all distinct colors to be even.
 
     ## 
     ## =======================================================
@@ -299,26 +299,28 @@ eve, regardless of any package size.
     ##                   cbind(n_color, n_color - even_count) 
     ##                          (1)                (2)        
     ## -------------------------------------------------------
-    ## n_color                 0.002              0.002       
-    ##                        (0.006)            (0.006)      
+    ## n_color                 0.001              0.001       
+    ##                        (0.008)            (0.008)      
     ##                                                        
-    ## n_unit                 -0.00002           -0.00002     
+    ## n_unit                 0.00001            0.00001      
     ##                        (0.0001)           (0.0001)     
     ##                                                        
-    ## color_No2               0.007                          
-    ##                        (0.037)                         
+    ## color_No2               0.0001                         
+    ##                        (0.036)                         
     ##                                                        
-    ## Constant               0.694***           0.697***     
+    ## Constant               0.696***           0.696***     
     ##                        (0.063)            (0.061)      
     ##                                                        
     ## -------------------------------------------------------
-    ## Observations            1,320              1,320       
-    ## Log Likelihood        -1,903.509         -1,903.526    
-    ## Akaike Inf. Crit.     3,815.019          3,813.052     
+    ## Observations            1,620              1,620       
+    ## Log Likelihood        -2,260.140         -2,260.140    
+    ## Akaike Inf. Crit.     4,528.281          4,526.281     
     ## =======================================================
     ## Note:                       *p<0.1; **p<0.05; ***p<0.01
 
-Unlike the previous regression, the second regression that examines the
+![](MnM-sampling-report_files/figure-gfm/regression%202-1.png)<!-- -->
+
+Like the previous regression, the second regression that examines the
 correlation of the number of colors and package size to the percentage
 of even numbers did not find a statistically significant correlation.
 
@@ -344,7 +346,7 @@ I found out that:
   significantly underrepresented (less than $\frac{2}{3}$ of its
   expected amount) is near zero.
 
-suggestion for any random sampler factory (like candies, lego, toys):
+suggestion for any random sampler factory (like candies, Lego, toys):
 
 1.  Smaller packages need more diversity check
 
@@ -363,20 +365,20 @@ which is more than I expected.
 
 For 5 colored pack like Skittles the average is about 2.9%
 
-For 2 colored pack the average is 24.5%, so for 2 colored marshmallow
-bag this will be the statistics.
+For 2 colored pack the average is 25%, so for 2 colored marshmallow bag
+this will be the statistics.
 
 See all here:
 
 | Colors | All Even Percent |
 |-------:|-----------------:|
-|      2 |            24.89 |
-|      3 |            12.58 |
-|      4 |             6.33 |
-|      5 |             2.61 |
-|      6 |             1.30 |
-|      7 |             0.78 |
-|      8 |             0.22 |
+|      2 |            24.64 |
+|      3 |            12.16 |
+|      4 |             6.44 |
+|      5 |             2.94 |
+|      6 |             1.50 |
+|      7 |             0.76 |
+|      8 |             0.39 |
 
 Probability of All Colors Even by Pack Colors Number
 
