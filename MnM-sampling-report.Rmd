@@ -7,9 +7,9 @@ output: github_document
 always_allow_html: true
 ---
 
-# 👉Intro
+# Intro
 
-### 🎯Objective of Simulation
+### Objective of Simulation
 
 This simulation explores the fairness and randomness in the color distribution of M&M-style chocolate candies. Specifically, it investigates:
 
@@ -21,12 +21,12 @@ This simulation explores the fairness and randomness in the color distribution o
 
 As a chocolate fan, I’ve always wondered:
 
-    Can I finish a pack of M&Ms eating two at a time, without ever mixing colors in a bite?
+    *  Can I finish a pack of M&Ms eating two at a time, without ever mixing colors in a bite?
 
 This playful question leads to a deeper statistical exploration of random sampling, distribution fairness, and packaging quality in candy production.
 
 
-### 🧪Method
+### Method
 
 Since production data from [M&M](https://www.mms.com/en-us) isn’t publicly available, I simulate packages based on common retail sizes and the standard 6-color set. Each simulation randomly draws a sample of candies, assigning each a color. We repeat this process hundreds of times to analyze statistical properties across "virtual" packages.
 
@@ -38,7 +38,7 @@ Through this approach, I estimate the probability of:
 
 3.  Seeing how these probabilities shift with pack size or color variety
 
-### 🧮Parameters
+### Parameters
 
 Basic parameters:
 
@@ -51,6 +51,7 @@ Key variables:
 - `n-unit`: Total candies in the pack
 
 ```{r}
+#parameters
 n= 800              #numbers of bags per sample
 n_color= 6          #unique colors of M&M
 gram= 0.91          #weight of one M&M
@@ -65,17 +66,11 @@ library(patchwork) #combine 2 plots
 library(stargazer) #beautiful regression
 ```
 ```{r parameters, error=FALSE, warning=FALSE, echo=FALSE}
-#parameters
-n<- 800            #numbers of bags per sample
-n_color<- 6         #unique colors of M&M
-gram<- 0.91         #weight of one M&M
-bag_g<- 250         #common weight of M&M package
-n_unit<- bag_g/gram #M&M per packagenm,
 av_per_color= n_unit/n_color
 paste0("The avarage number of lentils per color is ", round(av_per_color,1))
 ```
 
-# 🎲Creating the Sample
+# Creating the Sample
 
 ## General Sample
 
@@ -91,27 +86,27 @@ key parameters for `sample_MnM`
 
 - `x_units`: Total candies in each package
 
-- `t_colors`: Number of distinct colors in each package
+- `n_colors`: Number of distinct colors in each package
 
 ```{r sampling functions, error=FALSE, warning=FALSE, echo=F}
-Create_bag<- function(x,tx) #create bag using sample vector
+Create_bag<- function(bag,n_colors) #create bag using sample vector
   {
-  x<- floor(x)+sample(0:1,1)
-  res<- matrix(nrow = 1, ncol = tx)
-  colnames(res)<- 1:tx
-  S_res<- sample(tx,x,replace = T)
+  x<- floor(bag)+sample(0:1,1)
+  res<- matrix(nrow = 1, ncol = n_colors)
+  colnames(res)<- 1:n_colors
+  S_res<- sample(n_colors,x,replace = T)
   while(sum(table(S_res)>x))
   {S_res<- S_res[-1]}
-  for (i in 1:tx) {
+  for (i in 1:n_colors) {
     res[,i] <- sum(S_res==i)
     }
   res}
 
-sample_MnM<-function(n,x_units,t_colors) #create n bag using sample vector
+sample_MnM<-function(n,x_units,n_colors) #create n bag using sample vector
   {
-  res<- matrix(nrow = n, ncol = t_colors)
+  res<- matrix(nrow = n, ncol = n_colors)
   for (i in 1:n)
-    {res[i,]<- Create_bag(x= x_units,tx=t_colors)}
+    {res[i,]<- Create_bag(x_units,n_colors)}
   res}
 ```
 ```{r sample example, error=FALSE, warning=FALSE, echo=FALSE}
@@ -125,7 +120,7 @@ sample_MnM(3,100,6) %>%
    `colnames<-`(c("Red","Blue","Green", "Orange", "Yellow", "Brown"))
 ```
 
-## 📊Preview Graph
+## Preview Graph
 
 Now will be creating n bugs of M&M
 
@@ -153,11 +148,11 @@ MnM_sample<- sample_MnM(n,n_unit,n_color) %>%
 
 MnM_sample<-
   MnM_sample %>% as_data_frame() %>% 
-  mutate(even_count= rowSums(across(c(1:6)  , ~ .x %% 2 == 0)), #how many evens colors there are
+  mutate(even_count= rowSums(across(c(1:6), ~ .x %% 2 == 0)), #count evens colors
          even_evens= rowSums(across(c(1:6), ~ .x %% 2 == 1)) %% 2 ==0, #are the uneven colors even
          low_col=    rowSums(across(c(1:6), ~ .x <= 0.66*av_per_color)),
          Variance=    apply(across(c(1:6)), 1, var) %>% round(.,2), #var of candy per color/ type
-         min=        apply(across(c(1:6)),1,FUN = min), # lowest value in color
+         min=         apply(across(c(1:6)),1,FUN = min), # lowest value in color
          all_even=   even_count== 6
          )
 
@@ -213,7 +208,7 @@ red_1+red_2
 detach("package:patchwork", unload=TRUE)
 ```
 
-## 📏Statisics Checking of the Simullation
+## Statisics Checking of the Simullation
 
 ### Test Expected Value
 
@@ -347,7 +342,7 @@ MnM_sample %>%
   theme_minimal()
 ```
 
-## 🎲🎲Multiple Types of Samples
+## Multiple Types of Samples
 
 I will create a function that create sample for each number of colors and package size I want, and then calculate some interesting parameters
 
@@ -514,6 +509,8 @@ Therefore, splitting package by color on the big ones should be relatively even.
 
 ### Using Regression for Correlation Check
 
+I wanted to see if there is statistic correlation of the number of distinct colors of package size to the probability of all colors been even. as a result, I chose to check this claim with regression. Furthermore, I did the same regression adding another potential correlated parameter: the evenness of the number of distinct colors.
+
 ```{r regression, warning=FALSE, message=F, error=FALSE, echo=F}
 mega_snack_open<- function(nn,n_unit,n_color)
   {
@@ -527,7 +524,7 @@ mega_snack_open<- function(nn,n_unit,n_color)
     low_color<- 0.666*res[i,1]/(res[i,2])
     small_sample<- Create_bag(res[i,1],res[i,2])%>%
       as_data_frame() %>% 
-      mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0))/res[i,2],
+      mutate(even_count= rowSums(across(everything()  , ~ .x %% 2 == 0)),
              all_even=   rowSums(across(c(1:n_color)  , ~ .x %% 2 == 0))== res[i,2],
             )
     res[i,3]<- mean(small_sample$even_count)
@@ -537,22 +534,40 @@ mega_snack_open<- function(nn,n_unit,n_color)
   res %>% as.data.frame()
   }
 
-mega_snack_2<- mega_snack_open(20,n_unit_op,n_color) %>% 
-  mutate(color_No2= n_color %%2 == 0) #check if the number of colors is even
+mega_snack_2<- mega_snack_open(15,n_unit_op,2:12)
+mega_snack_2<- mega_snack_2 %>% 
+  mutate(color_No2= n_color %%2 == 0 
+         ) #check if the number of colors is even
 
-lm_color<- lm(mega_snack_2$even_count~ mega_snack_2$n_color +mega_snack_2$n_unit)
-#lm_color %>% summary()
+glm_all_even<- glm(all_even ~ n_color + n_unit, 
+                      data = mega_snack_2, 
+                      family = binomial)
+glm_all_even_2<- glm(all_even ~ n_color + n_unit + color_No2, 
+                      data = mega_snack_2, 
+                      family = binomial)
 
-lm_color_all<- lm(mega_snack_2$all_even~ mega_snack_2$n_color +mega_snack_2$n_unit+ mega_snack_2$color_No2)
-#lm_color_all %>% summary()
-
-stargazer(lm_color, lm_color_all, type = "text")
+stargazer(glm_all_even, glm_all_even_2, type = "text")
 ```
 
-Seeing  the $2_{nd}$ regression we can suggest that more colors is correlated with 3.3% less probability of all colors even,
-while even numbers of colors is correlated with 7.7% more probability of all colors eve, regardless of any package size.
+As you can see, there is a strong correlation negative of the number of colors to probability of all colors to be even, as expected. In addition, we find out that if the number of colors is even, the probability of all distinct colors to be even increase.
 
-# 🏁Conclusions
+Seeing  the $2_{nd}$ regression we can suggest that more colors is correlated with 1.3% less probability of all colors even,
+while even numbers of colors is correlated with 4.7% more probability of all colors eve, regardless of any package size.
+
+```{r regression 2, warning=FALSE, message=F, error=FALSE, echo=F}
+glm_even_count<- glm(cbind(n_color, n_color - even_count) ~ n_color + n_unit + color_No2, 
+                 data = mega_snack_2, 
+                 family = binomial)
+glm_even_count_2<- glm(cbind(n_color, n_color - even_count) ~ n_color + n_unit, 
+                 data = mega_snack_2, 
+                 family = binomial)
+
+stargazer(glm_even_count, glm_even_count_2, type = "text")
+```
+Unlike the previous regression, the second regression that examines the correlation of the number of colors and package size to the percentage of even numbers did not find a statistically significant correlation.
+
+
+# Summary
 
 ### Data Structure
 
@@ -597,7 +612,7 @@ summary_table<-
 knitr::kable(summary_table, caption = "Probability of All Colors Even by Pack Colors Number")
 ```
 
-### Summary
+### Conclusions
 
 To sum it up, for each medium pack the probability of all even colors is 1.4%, or 1 in a 73 packs of 250g. So I might need to change my snack preference to marshmallow if I want to keep this method.
 
