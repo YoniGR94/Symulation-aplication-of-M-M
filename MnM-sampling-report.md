@@ -1,7 +1,7 @@
 Statistical Analysis of Random Distribution in M&M Packages
 ================
 Yoni
-19 04, 2025
+20 04, 2025
 
 # Intro
 
@@ -97,15 +97,15 @@ key parameters for `sample_MnM`
 
     ## [1] "One bag of 100:"
 
-    ##       1  2  3  4  5  6
-    ## [1,] 22 14 10 27 14 13
+    ##       1  2  3 4  5  6
+    ## [1,] 23 12 17 8 22 19
 
     ## [1] "3 bags of 100:"
 
     ##       Red Blue Green Orange Yellow Brown
-    ## Bag_1  13   19    16     16     21    16
-    ## Bag_2  18   16    13     15     19    19
-    ## Bag_3  12   18    24     18     15    14
+    ## Bag_1  23   21    13     12     13    18
+    ## Bag_2  23   13    14     14     15    22
+    ## Bag_3  15   15    22     11     15    22
 
 ## Preview Graph
 
@@ -132,10 +132,10 @@ here are the first rows:
 
 | Red | Blue | Green | Orange | Yellow | Brown | even_count | even_evens | low_col | Variance | min | all_even |
 |---:|---:|---:|---:|---:|---:|---:|:---|---:|---:|---:|:---|
-| 39 | 45 | 56 | 49 | 38 | 47 | 2 | TRUE | 0 | 44.67 | 38 | FALSE |
-| 48 | 45 | 54 | 40 | 41 | 47 | 3 | FALSE | 0 | 26.17 | 40 | FALSE |
-| 36 | 44 | 55 | 44 | 48 | 48 | 5 | FALSE | 0 | 39.37 | 36 | FALSE |
-| 48 | 45 | 46 | 47 | 47 | 42 | 3 | FALSE | 0 | 4.57 | 42 | FALSE |
+| 57 | 51 | 49 | 40 | 43 | 35 | 1 | FALSE | 0 | 64.17 | 35 | FALSE |
+| 54 | 47 | 46 | 32 | 49 | 47 | 3 | FALSE | 0 | 54.17 | 32 | FALSE |
+| 54 | 44 | 41 | 39 | 51 | 46 | 3 | FALSE | 0 | 33.37 | 39 | FALSE |
+| 48 | 45 | 49 | 44 | 45 | 44 | 3 | FALSE | 0 | 4.57 | 44 | FALSE |
 
 M&M sample random rows
 
@@ -143,12 +143,12 @@ I summarized the sample by color bellow
 
 |        | Min. | 1st Qu. | Median |   Mean | 3rd Qu. | Max. |   Var |
 |:-------|-----:|--------:|-------:|-------:|--------:|-----:|------:|
-| Red    |   27 |      41 |     46 | 45.696 |      50 |   64 | 40.33 |
-| Blue   |   30 |      42 |     46 | 45.921 |      50 |   66 | 35.71 |
-| Green  |   27 |      42 |     46 | 46.010 |      50 |   67 | 37.71 |
-| Orange |   28 |      41 |     46 | 45.728 |      50 |   68 | 38.36 |
-| Yellow |   25 |      41 |     46 | 45.611 |      50 |   65 | 38.67 |
-| Brown  |   22 |      41 |     45 | 45.532 |      50 |   63 | 38.56 |
+| Red    |   25 |      41 |     45 | 45.587 |      50 |   68 | 40.00 |
+| Blue   |   25 |      42 |     46 | 45.606 |      50 |   68 | 39.83 |
+| Green  |   24 |      42 |     46 | 45.836 |      50 |   68 | 39.82 |
+| Orange |   25 |      42 |     46 | 45.798 |      50 |   67 | 37.23 |
+| Yellow |   25 |      42 |     46 | 45.732 |      50 |   65 | 35.46 |
+| Brown  |   29 |      42 |     46 | 45.917 |      50 |   67 | 37.99 |
 
 summary of all colors Distibution
 
@@ -169,7 +169,7 @@ Here is the result, none of them bellow 5% P. value
 p.value of $H_0: \mu= \frac{n-unit}{n-color}$
 
     ##     Red    Blue   Green  Orange  Yellow   Brown 
-    ## "64.9%" "48.0%" "25.2%" "76.1%" "37.0%" "19.3%"
+    ## "31.6%" "36.3%" "80.8%" "95.7%" "76.8%" "50.7%"
 
 Now I will do the same checking for 2 samples, to see whether there is
 correlation between each 2 colors distribution.
@@ -196,7 +196,7 @@ $$f(x) = \frac{1}{\Gamma(\alpha)\theta^\alpha} x^{\alpha-1}e^{-x/\theta}$$
 I can see that the variance distribution is Gamma like with shape and
 rate as seen below
 
-    ## [1] "The parameters of the gamma shaped variance is shape 2.573 and scale 17.819"
+    ## [1] "The parameters of the gamma shaped variance is shape 2.484 and scale 18.532"
 
 ![](MnM-sampling-report_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
@@ -222,11 +222,11 @@ Here is some random rows:
 
 | n_unit | n_color | even_count | even_evens | var_col | all_even | low_color | smallest_col |
 |-------:|--------:|-----------:|-----------:|--------:|---------:|----------:|-------------:|
-|   49.5 |       4 |      0.506 |      0.131 |  12.877 |    0.075 |     0.192 |            3 |
-|   27.5 |       5 |      0.492 |      0.096 |   5.282 |    0.022 |     0.326 |            0 |
-|  549.5 |       7 |      0.497 |      0.069 |  76.850 |    0.012 |     0.002 |           50 |
-|   49.5 |       7 |      0.504 |      0.073 |   7.428 |    0.013 |     0.282 |            0 |
-|  164.8 |       5 |      0.492 |      0.101 |  32.657 |    0.040 |     0.022 |           15 |
+|  274.7 |       2 |      0.515 |      0.249 | 146.788 |    0.263 |     0.000 |          110 |
+| 1098.9 |       5 |      0.498 |      0.099 | 222.754 |    0.028 |     0.000 |          180 |
+|  362.6 |       3 |      0.506 |      0.161 | 119.918 |    0.132 |     0.000 |           90 |
+|  274.7 |       5 |      0.495 |      0.100 |  56.636 |    0.031 |     0.002 |           32 |
+|   49.5 |       7 |      0.502 |      0.070 |   7.208 |    0.005 |     0.292 |            0 |
 
 Multiple sample example rows
 
@@ -373,13 +373,13 @@ See all here:
 
 | Colors | All Even Percent |
 |-------:|-----------------:|
-|      2 |            24.03 |
-|      3 |            12.32 |
-|      4 |             6.69 |
-|      5 |             3.24 |
-|      6 |             1.54 |
-|      7 |             0.84 |
-|      8 |             0.34 |
+|      2 |            25.05 |
+|      3 |            12.59 |
+|      4 |             6.28 |
+|      5 |             3.02 |
+|      6 |             1.62 |
+|      7 |             0.69 |
+|      8 |             0.51 |
 
 Probability of All Colors Even by Pack Colors Number
 
