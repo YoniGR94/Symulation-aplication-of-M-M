@@ -54,18 +54,18 @@ Key variables:
 
 ```{r parameters setup}
 #parameters
-n= 800              #numbers of bags per sample
+n= 1000              #numbers of bags per sample
 n_color= 6          #unique colors of M&M
 gram= 0.91          #weight of one M&M
 bag_g= 250          #common weight of M&M package
-n_unit= bag_g/gram  #M&M per packag
+n_unit= bag_g/gram  #M&M per package
 ```
 ```{r packages, message=FALSE, warning=FALSE, echo=FALSE}
 library(tidyverse)
 library(MASS) #calculate distribution parameters
 library(scales)
 library(patchwork) #combine 2 plots
-library(stargazer) #beautiful regression
+library(stargazer) #regression presentation
 ```
 ```{r mu of units, error=FALSE, warning=FALSE, echo=FALSE}
 av_per_color= n_unit/n_color
@@ -392,7 +392,7 @@ I will make the multiple sample. parameters:
 n_color<- 2:8 #Number of distinct colors in each package option
 grams_op<- c(25,45,150,250,330,500,750,1000) #Weight of each package option
 n_unit_op<- grams_op/gram #Total candies in each package option
-nn<- 1000 #Number of packages in the sample
+nn<- 1200 #Number of packages in the sample
 ```
 
 Here is some random rows:
@@ -535,9 +535,9 @@ mega_snack_open<- function(nn,n_unit,n_color)
   res %>% as.data.frame()
   }
 
-grams_op_2<- c(25,150,250,500,750,1000)
+grams_op_2<- c(150,250,500,1000)
 
-mega_snack_2<- mega_snack_open(30,grams_op_2,2:10)
+mega_snack_2<- mega_snack_open(60,grams_op_2,2:10)
 mega_snack_2<- mega_snack_2 %>% 
   mutate(color_No2= n_color %%2 == 0)
 
@@ -562,19 +562,43 @@ glm_even_count_2<- glm(cbind(n_color, n_color - even_count) ~ n_color + n_unit,
                  family = binomial)
 
 stargazer(glm_even_count, glm_even_count_2, type = "text")
-
-mega_snack_2 %>% ggplot(aes(x= n_color, y= even_count/n_color, color=color_No2 ))+
-  geom_smooth(se= F)+
-  scale_color_manual(values = c("coral4", "blue2"))+
-  labs(title = "Colors Evens Regression",
-       subtitle = "probability of all distinct color of lentils been even using smooth lines",
-       x = "No. colors",
-       y = "even count Percent",
-       color = "No. colors even") +
-  theme_bw()
 ```
 
-Like the previous regression, the second regression that examines the correlation of the number of colors and package size to the percentage of even numbers did not find a statistically significant correlation.
+Like the previous regression, the second regression that examines the correlation of the number of colors and package size to the percentage of even numbers did not find a statistically significant correlation. In addition, visually there is no clear correlation.
+
+```{r visual glm_even_count, message=F, error=FALSE, warning=F,echo=F, cache=T}
+library(viridis)
+library(ggridges)
+
+mega_snack_2 %>%
+    mutate(even_count_per= even_count / n_color ) %>% 
+  ggplot(aes(
+    x = even_count_per,
+    y = factor(n_color),
+    fill = stat(x)
+  )) +
+  geom_density_ridges_gradient(scale = 2, rel_min_height = 0.005) +
+  scale_fill_viridis(name = "Even Ratio", option = "C") +
+  labs(
+    title = "Distribution of Even Counts by Distinct Color",
+    subtitle = "Gradient color shows percent of even colors",
+    x = "Even count Percent",
+    y = "No. colors"
+  ) +
+  theme_minimal()+
+  stat_summary(
+    fun = mean,
+    geom = "point",
+    aes(group = factor(n_color)),
+    color = "black",
+    size = 3,
+    shape = 18
+  )+
+      theme(
+  panel.grid.major.y = element_line(color = "grey20"),
+  panel.grid.major.x = element_line(color = "grey80")
+    )
+```
 
 # Summary
 

@@ -11,3 +11,6 @@ lubridate
 MASS
 scales
 stargazer
+viridisLite
+viridis
+ggridges

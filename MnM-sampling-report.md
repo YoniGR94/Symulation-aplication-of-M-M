@@ -1,7 +1,7 @@
 Statistical Analysis of Random Distribution in M&M Packages
 ================
 Yoni
-18 04, 2025
+19 04, 2025
 
 # Intro
 
@@ -64,11 +64,11 @@ Key variables:
 
 ``` r
 #parameters
-n= 800              #numbers of bags per sample
+n= 1000              #numbers of bags per sample
 n_color= 6          #unique colors of M&M
 gram= 0.91          #weight of one M&M
 bag_g= 250          #common weight of M&M package
-n_unit= bag_g/gram  #M&M per packag
+n_unit= bag_g/gram  #M&M per package
 ```
 
     ## [1] "The avarage number of lentils per color is 45.8"
@@ -98,14 +98,14 @@ key parameters for `sample_MnM`
     ## [1] "One bag of 100:"
 
     ##       1  2  3  4  5  6
-    ## [1,] 14 17 13 24 15 17
+    ## [1,] 22 14 10 27 14 13
 
     ## [1] "3 bags of 100:"
 
     ##       Red Blue Green Orange Yellow Brown
-    ## Bag_1  18   18    17     17     15    15
-    ## Bag_2  26   14    14     15     19    13
-    ## Bag_3  21   15    20     13     15    16
+    ## Bag_1  13   19    16     16     21    16
+    ## Bag_2  18   16    13     15     19    19
+    ## Bag_3  12   18    24     18     15    14
 
 ## Preview Graph
 
@@ -132,23 +132,23 @@ here are the first rows:
 
 | Red | Blue | Green | Orange | Yellow | Brown | even_count | even_evens | low_col | Variance | min | all_even |
 |---:|---:|---:|---:|---:|---:|---:|:---|---:|---:|---:|:---|
-| 46 | 53 | 48 | 50 | 37 | 41 | 3 | FALSE | 0 | 34.97 | 37 | FALSE |
-| 37 | 53 | 46 | 46 | 53 | 39 | 2 | TRUE | 0 | 45.47 | 37 | FALSE |
-| 41 | 47 | 45 | 47 | 52 | 43 | 1 | FALSE | 0 | 14.57 | 41 | FALSE |
-| 47 | 35 | 48 | 52 | 56 | 37 | 3 | FALSE | 0 | 68.57 | 35 | FALSE |
+| 39 | 45 | 56 | 49 | 38 | 47 | 2 | TRUE | 0 | 44.67 | 38 | FALSE |
+| 48 | 45 | 54 | 40 | 41 | 47 | 3 | FALSE | 0 | 26.17 | 40 | FALSE |
+| 36 | 44 | 55 | 44 | 48 | 48 | 5 | FALSE | 0 | 39.37 | 36 | FALSE |
+| 48 | 45 | 46 | 47 | 47 | 42 | 3 | FALSE | 0 | 4.57 | 42 | FALSE |
 
 M&M sample random rows
 
 I summarized the sample by color bellow
 
-|        | Min. | 1st Qu. | Median |     Mean | 3rd Qu. | Max. |   Var |
-|:-------|-----:|--------:|-------:|---------:|--------:|-----:|------:|
-| Red    |   28 |      42 |     46 | 46.13625 |      50 |   65 | 38.67 |
-| Blue   |   29 |      41 |     45 | 45.56125 |      50 |   68 | 36.04 |
-| Green  |   27 |      41 |     46 | 45.84125 |      50 |   65 | 36.90 |
-| Orange |   27 |      42 |     46 | 45.76500 |      50 |   65 | 36.95 |
-| Yellow |   27 |      42 |     46 | 45.97625 |      50 |   66 | 39.84 |
-| Brown  |   28 |      41 |     45 | 45.21750 |      49 |   72 | 38.19 |
+|        | Min. | 1st Qu. | Median |   Mean | 3rd Qu. | Max. |   Var |
+|:-------|-----:|--------:|-------:|-------:|--------:|-----:|------:|
+| Red    |   27 |      41 |     46 | 45.696 |      50 |   64 | 40.33 |
+| Blue   |   30 |      42 |     46 | 45.921 |      50 |   66 | 35.71 |
+| Green  |   27 |      42 |     46 | 46.010 |      50 |   67 | 37.71 |
+| Orange |   28 |      41 |     46 | 45.728 |      50 |   68 | 38.36 |
+| Yellow |   25 |      41 |     46 | 45.611 |      50 |   65 | 38.67 |
+| Brown  |   22 |      41 |     45 | 45.532 |      50 |   63 | 38.56 |
 
 summary of all colors Distibution
 
@@ -168,8 +168,8 @@ Here is the result, none of them bellow 5% P. value
 
 p.value of $H_0: \mu= \frac{n-unit}{n-color}$
 
-    ##    Red   Blue  Green Orange Yellow  Brown 
-    ##  "11%"  "29%"  "80%"  "92%"  "40%"   "1%"
+    ##     Red    Blue   Green  Orange  Yellow   Brown 
+    ## "64.9%" "48.0%" "25.2%" "76.1%" "37.0%" "19.3%"
 
 Now I will do the same checking for 2 samples, to see whether there is
 correlation between each 2 colors distribution.
@@ -196,7 +196,7 @@ $$f(x) = \frac{1}{\Gamma(\alpha)\theta^\alpha} x^{\alpha-1}e^{-x/\theta}$$
 I can see that the variance distribution is Gamma like with shape and
 rate as seen below
 
-    ## [1] "The parameters of the gamma shaped variance is shape 2.288 and scale 19.825"
+    ## [1] "The parameters of the gamma shaped variance is shape 2.573 and scale 17.819"
 
 ![](MnM-sampling-report_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
@@ -215,18 +215,18 @@ I will make the multiple sample. parameters:
 n_color<- 2:8 #Number of distinct colors in each package option
 grams_op<- c(25,45,150,250,330,500,750,1000) #Weight of each package option
 n_unit_op<- grams_op/gram #Total candies in each package option
-nn<- 1000 #Number of packages in the sample
+nn<- 1200 #Number of packages in the sample
 ```
 
 Here is some random rows:
 
 | n_unit | n_color | even_count | even_evens | var_col | all_even | low_color | smallest_col |
 |-------:|--------:|-----------:|-----------:|--------:|---------:|----------:|-------------:|
-|  164.8 |       5 |      0.492 |      0.103 |  31.608 |    0.031 |     0.018 |           16 |
-|   27.5 |       8 |      0.499 |      0.066 |   3.791 |    0.005 |     0.529 |            0 |
-|  362.6 |       8 |      0.488 |      0.061 |  50.216 |    0.003 |     0.018 |           23 |
-|  549.5 |       3 |      0.489 |      0.172 | 173.994 |    0.126 |     0.000 |          150 |
-|  164.8 |       3 |      0.507 |      0.166 |  51.614 |    0.129 |     0.001 |           33 |
+|   49.5 |       4 |      0.506 |      0.131 |  12.877 |    0.075 |     0.192 |            3 |
+|   27.5 |       5 |      0.492 |      0.096 |   5.282 |    0.022 |     0.326 |            0 |
+|  549.5 |       7 |      0.497 |      0.069 |  76.850 |    0.012 |     0.002 |           50 |
+|   49.5 |       7 |      0.504 |      0.073 |   7.428 |    0.013 |     0.282 |            0 |
+|  164.8 |       5 |      0.492 |      0.101 |  32.657 |    0.040 |     0.022 |           15 |
 
 Multiple sample example rows
 
@@ -270,22 +270,22 @@ colors.
     ##                             all_even          
     ##                        (1)            (2)     
     ## ----------------------------------------------
-    ## n_color              -19.010        -9.560    
-    ##                    (1,000.750)     (528.484)  
+    ## n_color              -18.962        -9.535    
+    ##                     (869.341)      (459.099)  
     ##                                               
-    ## n_unit                -0.001        -0.001    
-    ##                      (0.001)        (0.001)   
+    ## n_unit               -0.0001        -0.0001   
+    ##                      (0.0005)      (0.0005)   
     ##                                               
-    ## color_No2                           11.228    
-    ##                                   (2,490.292) 
+    ## color_No2                           11.203    
+    ##                                   (2,162.952) 
     ##                                               
-    ## Constant              37.280         7.151    
-    ##                    (2,001.501)    (2,904.466) 
+    ## Constant              36.897         6.842    
+    ##                    (1,738.683)    (2,522.804) 
     ##                                               
     ## ----------------------------------------------
-    ## Observations          1,620          1,620    
-    ## Log Likelihood       -103.586      -103.586   
-    ## Akaike Inf. Crit.    213.173        215.173   
+    ## Observations          2,160          2,160    
+    ## Log Likelihood       -137.104      -137.104   
+    ## Akaike Inf. Crit.    280.209        282.209   
     ## ==============================================
     ## Note:              *p<0.1; **p<0.05; ***p<0.01
 
@@ -299,30 +299,31 @@ colors to probability of all distinct colors to be even.
     ##                   cbind(n_color, n_color - even_count) 
     ##                          (1)                (2)        
     ## -------------------------------------------------------
-    ## n_color                 0.001              0.001       
-    ##                        (0.008)            (0.008)      
+    ## n_color                 -0.005             -0.005      
+    ##                        (0.007)            (0.007)      
     ##                                                        
-    ## n_unit                 0.00001            0.00001      
-    ##                        (0.0001)           (0.0001)     
+    ## n_unit                 0.00003            0.00003      
+    ##                       (0.00005)          (0.00005)     
     ##                                                        
-    ## color_No2               0.0001                         
-    ##                        (0.036)                         
+    ## color_No2               -0.008                         
+    ##                        (0.031)                         
     ##                                                        
-    ## Constant               0.696***           0.696***     
-    ##                        (0.063)            (0.061)      
+    ## Constant               0.704***           0.701***     
+    ##                        (0.055)            (0.053)      
     ##                                                        
     ## -------------------------------------------------------
-    ## Observations            1,620              1,620       
-    ## Log Likelihood        -2,260.140         -2,260.140    
-    ## Akaike Inf. Crit.     4,528.281          4,526.281     
+    ## Observations            2,160              2,160       
+    ## Log Likelihood        -3,009.374         -3,009.407    
+    ## Akaike Inf. Crit.     6,026.749          6,024.815     
     ## =======================================================
     ## Note:                       *p<0.1; **p<0.05; ***p<0.01
 
-![](MnM-sampling-report_files/figure-gfm/regression%202-1.png)<!-- -->
-
 Like the previous regression, the second regression that examines the
 correlation of the number of colors and package size to the percentage
-of even numbers did not find a statistically significant correlation.
+of even numbers did not find a statistically significant correlation. In
+addition, visually there is no clear correlation.
+
+![](MnM-sampling-report_files/figure-gfm/visual%20glm_even_count-1.png)<!-- -->
 
 # Summary
 
@@ -372,13 +373,13 @@ See all here:
 
 | Colors | All Even Percent |
 |-------:|-----------------:|
-|      2 |            24.64 |
-|      3 |            12.16 |
-|      4 |             6.44 |
-|      5 |             2.94 |
-|      6 |             1.50 |
-|      7 |             0.76 |
-|      8 |             0.39 |
+|      2 |            24.03 |
+|      3 |            12.32 |
+|      4 |             6.69 |
+|      5 |             3.24 |
+|      6 |             1.54 |
+|      7 |             0.84 |
+|      8 |             0.34 |
 
 Probability of All Colors Even by Pack Colors Number
 
