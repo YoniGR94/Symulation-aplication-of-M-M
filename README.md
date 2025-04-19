@@ -12,7 +12,7 @@ The goal is to explore simulation creation and identify potential biases or anom
 
 Look for the result here:
 
-* [** Github Presentation MD**](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.md)
+* [**Github Presentation MD**](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.md)
 
 
 * [**PDF Presentation file**](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.pdf)
