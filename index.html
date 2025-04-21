@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M&M by Two</title>
+    <!-- Add Google Font for joyful display -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5e6d8;
+            margin: 0;
+            padding: 20px;
+            color: #5c3d2e;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #4682B4;
+        }
+        .setup, .game-info, .game-controls {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="number"], input[type="range"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4682B4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 5px;
+        }
+        button:hover {
+            background-color: #36648b;
+        }
+        #start-button, #reset-button {
+            background-color: #8b4513;
+        }
+        #start-button:hover, #reset-button:hover {
+            background-color: #6b3100;
+        }
+        #spoiler-button {
+            background-color: #c62828;
+        }
+        #spoiler-button:hover {
+            background-color: #8e0000;
+        }
+        .color-counter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+            font-family: 'Fredoka One', cursive; /* Joyful font for the counter */
+        }
+        .color-item {
+            padding: 8px 12px;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            min-width: 100px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+        }
+        .game-over {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: red;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #ffe6e6;
+            border-radius: 8px;
+            border: 2px solid red;
+        }
+        .winner {
+            color: green;
+            background-color: #e6ffe6;
+            border: 2px solid green;
+        }
+        .bite-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        /* 3D Lentil Style */
+        .lentil {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            transform: perspective(100px) rotateX(10deg);
+            margin: 5px;
+        }
+        .lentil::before {
+            content: '';
+            position: absolute;
+            top: 5%;
+            left: 20%;
+            width: 25%;
+            height: 25%;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+        }
+        .lentil::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%);
+        }
+        .hidden {
+            display: none;
+        }
+        .slider-value {
+            text-align: center;
+            font-weight: bold;
+        }
+        .pack-info {
+            text-align: center;
+            font-size: 18px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .game-params {
+            background-color: #e6ccb2;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+            color: #5c3d2e;
+        }
+        #eaten-counter {
+            border-top: 2px dashed #8b4513;
+            padding-top: 15px;
+            margin-top: 20px;
+        }
+        .total-eaten {
+            text-align: center;
+            font-size: 20px;
+            margin: 15px 0;
+            font-family: 'Fredoka One', cursive;
+            color: #8b4513;
+        }
+        .probability-info {
+            background-color: #e8f4f8;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            color: #4682B4;
+            font-weight: bold;
+        }
+        .info-label {
+            display: inline-block;
+            margin-right: 5px;
+            font-weight: normal;
+        }
+        .steps-counter {
+            font-weight: bold;
+            color: #8b4513;
+        }
+        .stat-block {
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 5px;
+            text-align: center;
+            flex-grow: 1;
+        }
+        /* Confetti Container */
+        #confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>M&M by Two</h1>
+        
+        <div id="setup" class="setup">
+            <label for="pack-size">Pack Size (20-1000):</label>
+            <input type="number" id="pack-size" min="20" max="1000" value="100">
+            
+            <label for="color-count">Number of Colors (2-10):</label>
+            <input type="number" id="color-count" min="2" max="10" value="5">
+            
+            <div id="probability-info" class="probability-info">
+                Choose number of colors to see winning probability
+            </div>
+            
+            <button id="start-button">Start Game</button>
+        </div>
+        
+        <div id="game-area" class="hidden">
+            <div id="game-over" class="game-over hidden"></div>
+            
+            <div id="game-params" class="game-params"></div>
+            
+            <div class="pack-info">
+                <div id="pack-remaining" class="stat-block"></div>
+                <div id="steps-counter" class="stat-block">Steps: 0</div>
+            </div>
+            
+            <div class="game-controls">
+                <label for="bite-size">Bite Size (2-10): <span id="bite-value">5</span></label>
+                <input type="range" id="bite-size" min="2" max="10" value="5">
+                
+                <button id="bite-button">Take a Bite</button>
+                <button id="spoiler-button">Spoiler (Finish Game)</button>
+                <button id="reset-button">Reset Game</button>
+            </div>
+            
+            <div class="game-info">
+                <h3>Last Bite:</h3>
+                <div id="last-bite" class="bite-display"></div>
+                
+                <h3>Eaten Lentils:</h3>
+                <div id="total-eaten" class="total-eaten"></div>
+                <div id="eaten-counter" class="color-counter"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+    
+    <script>
+        // Real M&M colors
+        const COLORS = [
+            { name: "Brown", hex: "#623421" },
+            { name: "Yellow", hex: "#FDD600" },
+            { name: "Red", hex: "#E11030" },
+            { name: "Blue", hex: "#2D4B9B" },
+            { name: "Orange", hex: "#F26F22" },
+            { name: "Green", hex: "#42B649" },
+            { name: "Purple", hex: "#7D4191" },
+            { name: "Pink", hex: "#ED85B0" },
+            { name: "Teal", hex: "#00A99D" },
+            { name: "Gray", hex: "#A0A0A0" } // Extra color if needed
+        ];
+        
+        // Winning probabilities by number of colors
+        const WIN_PROBABILITIES = {
+            2: "24%",
+            3: "12%",
+            4: "7%",
+            5: "3%",
+            6: "1.5%",
+            7: "<1%",
+            8: "<0.5%",
+            9: "<0.5%",
+            10: "<0.5%"
+        };
+        
+        // Game state
+        let packSize = 0;
+        let initialPackSize = 0;
+        let colorCount = 0;
+        let pack = [];
+        let eatenByColor = {};
+        let totalEaten = 0;
+        let stepsCount = 0;
+        let confettiInterval;
+        
+        // DOM elements
+        const setupDiv = document.getElementById("setup");
+        const gameArea = document.getElementById("game-area");
+        const gameParams = document.getElementById("game-params");
+        const packSizeInput = document.getElementById("pack-size");
+        const colorCountInput = document.getElementById("color-count");
+        const probabilityInfo = document.getElementById("probability-info");
+        const startButton = document.getElementById("start-button");
+        const biteSlider = document.getElementById("bite-size");
+        const biteValue = document.getElementById("bite-value");
+        const biteButton = document.getElementById("bite-button");
+        const spoilerButton = document.getElementById("spoiler-button");
+        const resetButton = document.getElementById("reset-button");
+        const packRemaining = document.getElementById("pack-remaining");
+        const stepsCounter = document.getElementById("steps-counter");
+        const lastBite = document.getElementById("last-bite");
+        const eatenCounter = document.getElementById("eaten-counter");
+        const totalEatenDiv = document.getElementById("total-eaten");
+        const gameOverDiv = document.getElementById("game-over");
+        const confettiContainer = document.getElementById("confetti-container");
+        
+        // Event listeners
+        startButton.addEventListener("click", startGame);
+        biteButton.addEventListener("click", takeBite);
+        spoilerButton.addEventListener("click", finishGameQuickly);
+        resetButton.addEventListener("click", resetGame);
+        biteSlider.addEventListener("input", updateBiteValue);
+        colorCountInput.addEventListener("input", updateProbabilityInfo);
+        
+        // Update probability info when color count changes
+        function updateProbabilityInfo() {
+            const colors = parseInt(colorCountInput.value);
+            if (colors >= 2 && colors <= 10) {
+                probabilityInfo.innerHTML = `Winning Probability with ${colors} colors: <strong>${WIN_PROBABILITIES[colors]}</strong>`;
+            } else {
+                probabilityInfo.textContent = "Choose number of colors to see winning probability";
+            }
+        }
+        
+        // Update bite value display when slider moves
+        function updateBiteValue() {
+            biteValue.textContent = biteSlider.value;
+        }
+        
+        // Start a new game
+        function startGame() {
+            packSize = parseInt(packSizeInput.value);
+            colorCount = parseInt(colorCountInput.value);
+            initialPackSize = packSize; // Save initial pack size
+            
+            // Validate inputs
+            if (packSize < 20 || packSize > 1000 || isNaN(packSize)) {
+                alert("Pack size must be between 20 and 1000!");
+                return;
+            }
+            
+            if (colorCount < 2 || colorCount > 10 || isNaN(colorCount)) {
+                alert("Number of colors must be between 2 and 10!");
+                return;
+            }
+            
+            // Initialize game state
+            pack = [];
+            eatenByColor = {};
+            totalEaten = 0;
+            stepsCount = 0;
+            
+            // Generate random lentils
+            for (let i = 0; i < packSize; i++) {
+                const colorIndex = Math.floor(Math.random() * colorCount);
+                pack.push(colorIndex);
+            }
+            
+            // Initialize eaten counter for each color
+            for (let i = 0; i < colorCount; i++) {
+                eatenByColor[i] = 0;
+            }
+            
+            // Display game parameters with winning probability
+            gameParams.innerHTML = `Pack Size: <span style="color: #4682B4;">${packSize}</span> • Colors: <span style="color: #4682B4;">${colorCount}</span> • Winning Probability: <span style="color: #4682B4;">${WIN_PROBABILITIES[colorCount]}</span>`;
+            
+            // Toggle UI elements
+            setupDiv.classList.add("hidden");
+            gameArea.classList.remove("hidden");
+            gameOverDiv.classList.add("hidden");
+            
+            // Update UI
+            updatePackInfo();
+            updateEatenCounter();
+            lastBite.innerHTML = "";
+            stepsCounter.textContent = "Steps: 0";
+            
+            // Clear any existing confetti
+            stopConfetti();
+            confettiContainer.innerHTML = "";
+        }
+        
+        // Take a bite from the pack
+        function takeBite() {
+            const biteSize = parseInt(biteSlider.value);
+            
+            if (pack.length < biteSize) {
+                alert("Not enough lentils left for this bite size!");
+                return;
+            }
+            
+            // Increment steps counter
+            stepsCount++;
+            stepsCounter.textContent = `Steps: ${stepsCount}`;
+            
+            // Take random lentils from the pack
+            const bite = [];
+            for (let i = 0; i < biteSize; i++) {
+                const index = Math.floor(Math.random() * pack.length);
+                bite.push(pack[index]);
+                pack.splice(index, 1); // Remove from pack correctly
+            }
+            
+            // Process the bite (remove pairs, return singles)
+            processLentils(bite);
+            
+            // Check for game over condition
+            checkGameOver();
+        }
+        
+        // Spoiler function to finish game quickly - take all remaining lentils at once
+        function finishGameQuickly() {
+            if (confirm("Are you sure you want to use the spoiler and finish the game?")) {
+                // Increment steps counter
+                stepsCount++;
+                stepsCounter.textContent = `Steps: ${stepsCount}`;
+                
+                // Clear last bite display
+                lastBite.innerHTML = "";
+                
+                // Process all lentils from the pack
+                // Create a copy of the pack for display purposes
+                const allLentils = [...pack];
+                
+                // Count by color
+                const colorCounts = {};
+                for (const color of allLentils) {
+                    if (!colorCounts[color]) {
+                        colorCounts[color] = 0;
+                    }
+                    colorCounts[color]++;
+                }
+                
+                // Track remaining singles
+                let remainingSingles = 0;
+                
+                // Process each color
+                for (const color in colorCounts) {
+                    const colorIndex = parseInt(color);
+                    const count = colorCounts[color];
+                    const pairs = Math.floor(count / 2);
+                    const singles = count % 2;
+                    
+                    // Update eaten counter for pairs
+                    if (pairs > 0) {
+                        eatenByColor[colorIndex] += pairs * 2;
+                        totalEaten += pairs * 2;
+                    }
+                    
+                    // Count singles
+                    if (singles > 0) {
+                        remainingSingles += singles;
+                    }
+                    
+                    // Display all lentils in last bite
+                    for (let i = 0; i < count; i++) {
+                        const lentil = document.createElement("div");
+                        lentil.className = "lentil";
+                        lentil.style.backgroundColor = COLORS[colorIndex].hex;
+                        
+                        // Mark pairs as eaten with reduced opacity
+                        if (i < pairs * 2) {
+                            lentil.style.opacity = "0.5";
+                        }
+                        
+                        lastBite.appendChild(lentil);
+                    }
+                }
+                
+                // Clear the pack since we've processed everything
+                pack = [];
+                
+                // Update UI
+                updatePackInfo();
+                updateEatenCounter();
+                
+                // Show game over message
+                if (remainingSingles === 0) {
+                    gameOverDiv.innerHTML = "Game Over: Winner!";
+                    gameOverDiv.classList.add("winner");
+                    startConfetti(); // Start confetti animation for winners
+                } else {
+                    gameOverDiv.innerHTML = `Game Over! ${remainingSingles} lentils left unpaired out of ${initialPackSize}.`;
+                    gameOverDiv.classList.remove("winner");
+                }
+                
+                gameOverDiv.classList.remove("hidden");
+                biteButton.disabled = true;
+                spoilerButton.disabled = true;
+            }
+        }
+        
+        // Process lentils - remove pairs, return singles
+        function processLentils(bite) {
+            // Count lentils by color
+            const colorCounts = {};
+            for (let i = 0; i < bite.length; i++) {
+                const color = bite[i];
+                if (!colorCounts[color]) {
+                    colorCounts[color] = 0;
+                }
+                colorCounts[color]++;
+            }
+            
+            // Clear last bite display
+            lastBite.innerHTML = "";
+            
+            // Process each color
+            for (const color in colorCounts) {
+                const colorIndex = parseInt(color);
+                const count = colorCounts[color];
+                const pairs = Math.floor(count / 2);
+                const singles = count % 2;
+                
+                // Update eaten counter
+                if (pairs > 0) {
+                    eatenByColor[colorIndex] += pairs * 2;
+                    totalEaten += pairs * 2;
+                }
+                
+                // Return singles to pack
+                for (let i = 0; i < singles; i++) {
+                    pack.push(colorIndex);
+                }
+                
+                // Display in last bite
+                for (let i = 0; i < count; i++) {
+                    const lentil = document.createElement("div");
+                    lentil.className = "lentil";
+                    lentil.style.backgroundColor = COLORS[colorIndex].hex;
+                    
+                    // Add reduced opacity for paired (eaten) lentils
+                    if (i < pairs * 2) {
+                        lentil.style.opacity = "0.5";
+                    }
+                    
+                    lastBite.appendChild(lentil);
+                }
+            }
+            
+            // Update UI
+            updatePackInfo();
+            updateEatenCounter();
+        }
+        
+        // Check if the game can continue (are there any pairs left?)
+        function canContinue() {
+            if (pack.length === 0) return false;
+            
+            const colorCounts = {};
+            for (let i = 0; i < pack.length; i++) {
+                const color = pack[i];
+                if (!colorCounts[color]) {
+                    colorCounts[color] = 0;
+                }
+                colorCounts[color]++;
+            }
+            
+            // Check if any color has at least 2 lentils
+            for (const color in colorCounts) {
+                if (colorCounts[color] >= 2) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        // Check for game over condition
+        function checkGameOver() {
+            if (!canContinue()) {
+                if (pack.length === 0) {
+                    gameOverDiv.innerHTML = "Game Over: Winner!";
+                    gameOverDiv.classList.add("winner");
+                    startConfetti(); // Start confetti animation for winners
+                } else {
+                    gameOverDiv.innerHTML = `Game Over! ${pack.length} lentils left out of ${initialPackSize}.`;
+                    gameOverDiv.classList.remove("winner");
+                }
+                gameOverDiv.classList.remove("hidden");
+                biteButton.disabled = true;
+                spoilerButton.disabled = true;
+            }
+        }
+        
+        // Update the pack information display
+        function updatePackInfo() {
+            packRemaining.textContent = `Pack: ${pack.length} lentils remaining`;
+        }
+        
+        // Update the eaten counter display
+        function updateEatenCounter() {
+            eatenCounter.innerHTML = "";
+            totalEatenDiv.textContent = `Total Eaten: ${totalEaten}`;
+            
+            for (let i = 0; i < colorCount; i++) {
+                if (eatenByColor[i] > 0) {
+                    const colorItem = document.createElement("div");
+                    colorItem.className = "color-item";
+                    colorItem.style.backgroundColor = COLORS[i].hex;
+                    colorItem.textContent = `${COLORS[i].name}: ${eatenByColor[i]}`;
+                    eatenCounter.appendChild(colorItem);
+                }
+            }
+        }
+        
+        // Reset the game
+        function resetGame() {
+            setupDiv.classList.remove("hidden");
+            gameArea.classList.add("hidden");
+            biteButton.disabled = false;
+            spoilerButton.disabled = false;
+            gameOverDiv.classList.add("hidden");
+            gameOverDiv.classList.remove("winner");
+            pack = [];
+            eatenByColor = {};
+            totalEaten = 0;
+            stepsCount = 0;
+            updateProbabilityInfo();
+            stopConfetti();
+            confettiContainer.innerHTML = "";
+        }
+        
+        // Confetti Animation
+        function createConfetti() {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', 
+                           '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', 
+                           '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+            
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            
+            // Random position, color, size and rotation
+            const left = Math.random() * 100;
+            const width = Math.random() * 10 + 5;
+            const height = Math.random() * 10 + 5;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const rotation = Math.random() * 360;
+            const shape = Math.random() > 0.5 ? '50%' : '0%';
+            
+            confetti.style.left = left + 'vw';
+            confetti.style.width = width + 'px';
+            confetti.style.height = height + 'px';
+            confetti.style.backgroundColor = color;
+            confetti.style.transform = 'rotate(' + rotation + 'deg)';
+            confetti.style.borderRadius = shape;
+            confetti.style.top = '-20px';
+            
+            confettiContainer.appendChild(confetti);
+            
+            // Animation
+            let topPosition = -20;
+            const fallSpeed = Math.random() * 3 + 2;
+            const swayAmount = Math.random() * 5 - 2.5;
+            let swayPos = left;
+            let swayDirection = Math.random() > 0.5 ? 1 : -1;
+            
+            const fallAnimation = setInterval(() => {
+                topPosition += fallSpeed;
+                swayPos += swayDirection * swayAmount / 10;
+                
+                if (Math.random() < 0.1) swayDirection *= -1;
+                
+                confetti.style.top = topPosition + 'px';
+                confetti.style.left = swayPos + 'vw';
+                
+                if (topPosition > window.innerHeight) {
+                    clearInterval(fallAnimation);
+                    confetti.remove();
+                }
+            }, 50);
+        }
+        
+        function startConfetti() {
+            stopConfetti(); // Clear any existing confetti first
+            confettiInterval = setInterval(() => {
+                for (let i = 0; i < 3; i++) {
+                    createConfetti();
+                }
+            }, 100);
+            
+            // Stop after 8 seconds
+            setTimeout(() => {
+                stopConfetti();
+            }, 8000);
+        }
+        
+        function stopConfetti() {
+            if (confettiInterval) {
+                clearInterval(confettiInterval);
+            }
+        }
+        
+        // Initialize probability info on load
+        updateProbabilityInfo();
+    </script>
+</body>
+</html>
