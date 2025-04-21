@@ -19,7 +19,7 @@ This simulation explores the fairness and randomness in the color distribution o
 
 3.  How do the number of candies and available colors impact that probability?
 
-while seeing some chocolate packages, I wondered:
+While seeing some chocolate packages, I wondered:
 
       **Can I finish a pack of M&M eating two at a time, without ever mixing colors in a bite?**
 
@@ -28,7 +28,7 @@ This playful question leads to a deeper statistical exploration of random sampli
 
 ### Methodology
 
-Since production data from [M&M](https://www.mms.com/en-us) isn’t publicly available, I simulate packages based on common retail sizes and the standard 6-color set. Each simulation randomly draws a sample of candies, assigning each a color. We repeat this process hundreds of times to analyze statistical properties across "virtual" packages.
+Since production data from [M&M](https://www.mms.com/en-us) isn’t publicly available, I simulate packages based on common retail sizes and the standard 6-color set. Each simulation randomly draws a sample of candies, assigning each a color. I repeated this process hundreds of times to analyze statistical properties across "virtual" packages.
 
 Through this approach, I estimate the probability of:
 
@@ -667,4 +667,10 @@ I applied:
 
 In addition, I created the infrastructure for similar questions with different parameters to be checked in a reusable, structured way.
 
+### Bonus: M&M Simulation
 
+You can try to simulate a package and play here:
+
+[the M&M Pack Simulation Game](https://yonigr94.github.io/Symulation-aplication-of-M-M/)
+
+Have fun!

@@ -20,6 +20,10 @@ Look for the result here:
 
 * [**RMD code file**](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.Rmd)
 
+
+* [**M&M Pack Simulation Game**](https://yonigr94.github.io/Symulation-aplication-of-M-M/)
+
+
 For now, you can see the result: Probability of all colors of snack package be in couples by size of package and number of colors:
 
 <img src="https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/Heatmap_all_evens.png?raw=true" width="600"/>
@@ -66,6 +70,20 @@ I use approximately 15% AI prompt for these tasks:
 2. Automation of simple functions and plots
 
 3. Peer review
+
+4. Bonus game part
+
+
+### Bonus: M&M Simulation Game
+
+In order to demonstrate the simulation on more visual fun way, I created this Game below. I use LMM with the method of vibe coding,
+managing the creation of game by demand and description of sampling candy package and checking whether the distinct colors are arranged in pairs in the package.
+
+You can try to simulate a package and play here:
+
+[**M&M Pack Simulation Game**](https://yonigr94.github.io/Symulation-aplication-of-M-M/)
+
+Have fun!
 
 ### 🤝 Contributions
 
