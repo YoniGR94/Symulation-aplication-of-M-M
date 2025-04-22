@@ -58,6 +58,17 @@
         button:hover {
             background-color: #36648b;
         }
+        .instructions {
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #d69c7c;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #e8f4f8;
+        }
+
         #start-button, #reset-button {
             background-color: #8b4513;
         }
@@ -230,10 +241,10 @@
         
         <div id="setup" class="setup">
             <label for="pack-size">Pack Size (20-1000):</label>
-            <input type="number" id="pack-size" min="20" max="1000" value="100">
+            <input type="number" id="pack-size" min="20" max="1000" value="200">
             
-            <label for="color-count">Number of Colors (2-10):</label>
-            <input type="number" id="color-count" min="2" max="10" value="5">
+            <label for="color-count">Number of Colors (2-12):</label>
+            <input type="number" id="color-count" min="2" max="12" value="6">
             
             <div id="probability-info" class="probability-info">
                 Choose number of colors to see winning probability
@@ -253,8 +264,8 @@
             </div>
             
             <div class="game-controls">
-                <label for="bite-size">Bite Size (2-10): <span id="bite-value">5</span></label>
-                <input type="range" id="bite-size" min="2" max="10" value="5">
+                <label for="bite-size">Bite Size (2-12): <span id="bite-value">6</span></label>
+                <input type="range" id="bite-size" min="2" max="12" value="6">
                 
                 <button id="bite-button">Take a Bite</button>
                 <button id="spoiler-button">Spoiler (Finish Game)</button>
@@ -275,6 +286,11 @@
     <!-- Confetti Container -->
     <div id="confetti-container"></div>
     
+<div class="instructions">
+  <p>choose number of distinct colors from 2 to 12 and number of units in the package, and then press play</p>
+  <p>If all units distinct colors are paired, You wins!</p>
+</div>
+
     <script>
         // Real M&M colors
         const COLORS = [
@@ -283,11 +299,13 @@
             { name: "Red", hex: "#E11030" },
             { name: "Blue", hex: "#2D4B9B" },
             { name: "Orange", hex: "#F26F22" },
-            { name: "Green", hex: "#42B649" },
+            { name: "Green", hex: "#0da82a" },
             { name: "Purple", hex: "#7D4191" },
             { name: "Pink", hex: "#ED85B0" },
             { name: "Teal", hex: "#00A99D" },
-            { name: "Gray", hex: "#A0A0A0" } // Extra color if needed
+            { name: "Gray", hex: "#A0A0A0" },
+            { name: "Mustard", hex: "#aeb545" },
+            { name: "Grass", hex: "#6bbf54" } // Extra color if needed
         ];
         
         // Winning probabilities by number of colors
@@ -300,7 +318,9 @@
             7: "<1%",
             8: "<0.5%",
             9: "<0.5%",
-            10: "<0.5%"
+            10: "<0.5%",
+            11: "<0.5%",
+            12: "<0.5%"
         };
         
         // Game state
@@ -333,7 +353,8 @@
         const totalEatenDiv = document.getElementById("total-eaten");
         const gameOverDiv = document.getElementById("game-over");
         const confettiContainer = document.getElementById("confetti-container");
-        
+
+
         // Event listeners
         startButton.addEventListener("click", startGame);
         biteButton.addEventListener("click", takeBite);
@@ -345,7 +366,7 @@
         // Update probability info when color count changes
         function updateProbabilityInfo() {
             const colors = parseInt(colorCountInput.value);
-            if (colors >= 2 && colors <= 10) {
+            if (colors >= 2 && colors <= 12) {
                 probabilityInfo.innerHTML = `Winning Probability with ${colors} colors: <strong>${WIN_PROBABILITIES[colors]}</strong>`;
             } else {
                 probabilityInfo.textContent = "Choose number of colors to see winning probability";
@@ -369,8 +390,8 @@
                 return;
             }
             
-            if (colorCount < 2 || colorCount > 10 || isNaN(colorCount)) {
-                alert("Number of colors must be between 2 and 10!");
+            if (colorCount < 2 || colorCount > 12 || isNaN(colorCount)) {
+                alert("Number of colors must be between 2 and 12!");
                 return;
             }
             
