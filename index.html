@@ -60,13 +60,13 @@
         }
         .instructions {
             margin-top: 20px;
-            text-align: center;
+            text-align: left;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: #d69c7c;
+            background-color: #d6957c;
             padding: 10px;
             border-radius: 8px;
             margin-top: 15px;
-            color: #e8f4f8;
+            color: #f2f6f7;
         }
 
         #start-button, #reset-button {
@@ -251,7 +251,15 @@
             </div>
             
             <button id="start-button">Start Game</button>
+
+            <div class="instructions">
+            <p>Choose number of distinct colors from 2 to 12 and number of units in the package, and then press play.</p>
+            <p>At each step you need to select 2 to 12 units to sample from the package. Alternatively,
+you can click on the spoiler queue and open the entire package.</p>
+            <p>If all units distinct colors are paired, You wins!</p>
+            </div>
         </div>
+
         
         <div id="game-area" class="hidden">
             <div id="game-over" class="game-over hidden"></div>
@@ -285,11 +293,7 @@
     
     <!-- Confetti Container -->
     <div id="confetti-container"></div>
-    
-<div class="instructions">
-  <p>choose number of distinct colors from 2 to 12 and number of units in the package, and then press play</p>
-  <p>If all units distinct colors are paired, You wins!</p>
-</div>
+   
 
     <script>
         // Real M&M colors
