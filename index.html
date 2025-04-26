@@ -247,16 +247,16 @@
             <input type="number" id="color-count" min="2" max="12" value="6">
             
             <div id="probability-info" class="probability-info">
-                Choose number of colors to see winning probability
+                Choose number of colors to see winning probability and play
             </div>
             
             <button id="start-button">Start Game</button>
 
             <div class="instructions">
             <p>Choose number of distinct colors from 2 to 12 and number of units in the package, and then press play.</p>
-            <p>At each step you need to select 2 to 12 units to sample from the package. Alternatively,
+            <p>In each step you need to select 2 to 12 units to sample from the package. Alternatively,
 you can click on the spoiler queue and open the entire package.</p>
-            <p>If all units distinct colors are paired, You wins!</p>
+            <p>If all units distinct colors are paired, You win!</p>
             </div>
         </div>
 
@@ -319,12 +319,12 @@ you can click on the spoiler queue and open the entire package.</p>
             4: "7%",
             5: "3%",
             6: "1.5%",
-            7: "<1%",
-            8: "<0.5%",
-            9: "<0.5%",
-            10: "<0.5%",
-            11: "<0.5%",
-            12: "<0.5%"
+            7: "0.7%",
+            8: "0.4%",
+            9: "<0.2%",
+            10: "<0.2%",
+            11: "<0.1%",
+            12: "<0.1%"
         };
         
         // Game state
@@ -531,11 +531,11 @@ you can click on the spoiler queue and open the entire package.</p>
                 
                 // Show game over message
                 if (remainingSingles === 0) {
-                    gameOverDiv.innerHTML = "Game Over: Winner!";
+                    gameOverDiv.innerHTML = "Game Over: You win!";
                     gameOverDiv.classList.add("winner");
                     startConfetti(); // Start confetti animation for winners
                 } else {
-                    gameOverDiv.innerHTML = `Game Over! ${remainingSingles} lentils left unpaired out of ${initialPackSize}.`;
+                    gameOverDiv.innerHTML = `Game Over! ${remainingSingles} lentils were left unpaired out of ${initialPackSize}.`;
                     gameOverDiv.classList.remove("winner");
                 }
                 
@@ -625,11 +625,11 @@ you can click on the spoiler queue and open the entire package.</p>
         function checkGameOver() {
             if (!canContinue()) {
                 if (pack.length === 0) {
-                    gameOverDiv.innerHTML = "Game Over: Winner!";
+                    gameOverDiv.innerHTML = "Game Over: You win!";
                     gameOverDiv.classList.add("winner");
                     startConfetti(); // Start confetti animation for winners
                 } else {
-                    gameOverDiv.innerHTML = `Game Over! ${pack.length} lentils left out of ${initialPackSize}.`;
+                    gameOverDiv.innerHTML = `Game Over! ${pack.length} lentils were left out of ${initialPackSize}.`;
                     gameOverDiv.classList.remove("winner");
                 }
                 gameOverDiv.classList.remove("hidden");
@@ -687,8 +687,8 @@ you can click on the spoiler queue and open the entire package.</p>
             
             // Random position, color, size and rotation
             const left = Math.random() * 100;
-            const width = Math.random() * 10 + 5;
-            const height = Math.random() * 10 + 5;
+            const width = Math.random() * 12 + 5;
+            const height = Math.random() * 12 + 5;
             const color = colors[Math.floor(Math.random() * colors.length)];
             const rotation = Math.random() * 360;
             const shape = Math.random() > 0.5 ? '50%' : '0%';
