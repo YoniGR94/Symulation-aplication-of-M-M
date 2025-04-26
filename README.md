@@ -6,7 +6,7 @@
 🔴🟡🟠🟢🔵🟤
 
 
-This repository contains a data simulation of M&M packages, analyzing the distribution of colors and various statistical properties.
+This is a data simulation of M&M packages were I am analyzing the distribution of colors and various statistical properties.
 
 The goal is to explore simulation creation and identify potential biases or anomalies.
 
@@ -24,11 +24,11 @@ Look for the result here:
 * [**M&M Pack Simulation Game**](https://yonigr94.github.io/Symulation-aplication-of-M-M/)
 
 
-For now, you can see the result: Probability of all colors of snack package be in couples by size of package and number of colors:
+For now, you can see the main result: Probability of all colors of snack package be in couples by size of package and number of colors:
 
 <img src="https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/Heatmap_all_evens.png?raw=true" width="600"/>
 
-### 📂 What’s Inside?
+### 📂 Inside the project
 
 ✅ Simulated M&M packages with different color distributions
 
@@ -39,10 +39,6 @@ For now, you can see the result: Probability of all colors of snack package be i
 ✅ The interesting Question: can you eat each color two by two all the way to the end?
 
 
-Here is the distribution of each color of M&M from my simulation
-
-<img src="https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/colored_M&M.png?raw=true" width="600"/>
-
 ### 🔍 Key Questions Explored
 
 1. How evenly does colors distributed in an M&M package?
@@ -50,6 +46,10 @@ Here is the distribution of each color of M&M from my simulation
 2. What is the probability of getting too little of one color?
 
 3. Do different package sizes affect color variation?
+
+Here is the distribution of each color of M&M from my simulation
+
+<img src="https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/colored_M&M.png?raw=true" width="600"/>
 
 ### 📚 required libraries
 
