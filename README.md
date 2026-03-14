@@ -1,8 +1,7 @@
-# Symulation-aplication-of-M-M
+# 🍫 M&M by Two — Color Pairing Simulation
 
-### 🍫🍬 M&M Package Simulation
-
-
+A statistical simulation exploring whether M&M colors distribute evenly enough to eat every color in pairs
+— with an interactive game to try it yourself
 🔴🟡🟠🟢🔵🟤
 
 
@@ -61,23 +60,11 @@ library(MASS)
 library(scales)
 ```
 
-### 🔧 AI
-
-I use approximately 15% AI prompt for these tasks:
-
-1. Error on cloning and function output
-
-2. Automation of simple functions and plots
-
-3. Peer review
-
-4. Bonus game part
-
 
 ### Bonus: M&M Simulation Game
 
-In order to demonstrate the simulation on more visual fun way, I created this Game below. I use LMM with the method of vibe coding,
-managing the creation of game by demand and description of sampling candy package and checking whether the distinct colors are arranged in pairs in the package.
+In order to demonstrate the simulation on more visual fun way, I created this Game below.The simulation was created via vibe coding,
+showing sampling of candy package and checking whether the distinct colors are arranged in pairs in the package.
 
 You can try to simulate a package and play here:
 
