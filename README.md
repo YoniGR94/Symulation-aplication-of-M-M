@@ -20,7 +20,7 @@ Look for the result here:
 * [**RMD code file**](https://github.com/YoniGR94/Symulation-aplication-of-M-M/blob/main/MnM-sampling-report.Rmd)
 
 
-* [**M&M Pack Simulation Game**](https://yonigr94.github.io/Symulation-aplication-of-M-M/)
+* [**M&M Pack Simulation Game**](https://yonigr94.github.io/Simulation-application-of-M-M/)
 
 
 For now, you can see the main result: Probability of all colors of snack package be in couples by size of package and number of colors:
@@ -68,7 +68,7 @@ showing sampling of candy package and checking whether the distinct colors are a
 
 You can try to simulate a package and play here:
 
-[**M&M Pack Simulation Game**](https://yonigr94.github.io/Symulation-aplication-of-M-M/)
+[**M&M Pack Simulation Game**](https://yonigr94.github.io/Simulation-application-of-M-M/)
 
 Have fun!
 
