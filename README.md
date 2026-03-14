@@ -2,7 +2,7 @@
 
 A statistical simulation exploring whether M&M colors distribute evenly enough to eat every color in pairs
 — with an interactive game to try it yourself
-🔴🟡🟠🟢🔵🟤
+🟤🔴🟡🟠🟢🔵🟤
 
 
 This is a data simulation of M&M packages were I am analyzing the distribution of colors and various statistical properties.
