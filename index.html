@@ -4,750 +4,972 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>M&M by Two</title>
-    <!-- Add Google Font for joyful display -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5e6d8;
-            margin: 0;
-            padding: 20px;
-            color: #5c3d2e;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #4682B4;
-        }
-        .setup, .game-info, .game-controls {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f8f8f8;
-            border-radius: 8px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        input[type="number"], input[type="range"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4682B4;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
-            margin-bottom: 5px;
-        }
-        button:hover {
-            background-color: #36648b;
-        }
-        .instructions {
-            margin-top: 20px;
-            text-align: left;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: #d6957c;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 15px;
-            color: #f2f6f7;
+        :root {
+            --red:      #D63031;
+            --yellow:   #FDCB6E;
+            --blue:     #2D4B9B;
+            --brown:    #623421;
+            --card-bg:  rgba(255, 255, 255, 0.78);
+            --shadow:   0 8px 32px rgba(160, 60, 20, 0.13);
+            --radius:   20px;
+            --text-dark:#3D1C08;
+            --text-mid: #7A4427;
         }
 
-        #start-button, #reset-button {
-            background-color: #8b4513;
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background:
+                radial-gradient(ellipse at 5% 5%,   #FFE0B0 0%, transparent 55%),
+                radial-gradient(ellipse at 95% 95%,  #FFD090 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 50%,  #FFF3E0, #FDEBD0);
+            min-height: 100vh;
+            padding: 20px 16px 48px;
+            color: var(--text-dark);
         }
-        #start-button:hover, #reset-button:hover {
-            background-color: #6b3100;
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
         }
-        #spoiler-button {
-            background-color: #c62828;
+
+        /* ── HEADER ── */
+        h1 {
+            font-family: 'Baloo 2', cursive;
+            font-weight: 900;
+            font-size: clamp(2.4rem, 8vw, 3.8rem);
+            text-align: center;
+            color: var(--red);
+            text-shadow:
+                3px 3px 0 #7c1010,
+                6px 6px 0 rgba(124, 16, 16, 0.15),
+                0 0 40px rgba(214, 48, 49, 0.22),
+                0 -1px 0 rgba(255, 200, 180, 0.6);
+            letter-spacing: -0.5px;
+            margin: 4px 0 2px;
+            line-height: 1.1;
         }
-        #spoiler-button:hover {
-            background-color: #8e0000;
+
+        .subtitle {
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-align: center;
+            color: var(--text-mid);
+            margin-bottom: 22px;
+            opacity: 0.75;
+            letter-spacing: 0.2px;
         }
-        .color-counter {
+
+        h3 {
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-mid);
+            margin-bottom: 10px;
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 220, 170, 0.55);
+            margin-bottom: 14px;
+        }
+
+        /* ── INPUTS ── */
+        label {
+            display: block;
+            font-weight: 700;
+            color: var(--text-mid);
+            margin-bottom: 6px;
+            font-size: 0.93rem;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .input-group { flex: 1; min-width: 130px; }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #F0C090;
+            border-radius: 14px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            background: rgba(255, 255, 255, 0.9);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--red);
+            box-shadow: 0 0 0 3px rgba(214, 48, 49, 0.12);
+        }
+
+        input[type="range"] {
+            flex: 1;
+            accent-color: var(--red);
+            cursor: pointer;
+            height: 6px;
+        }
+
+        /* ── BUTTONS ── */
+        button {
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.17s ease, box-shadow 0.17s ease, filter 0.17s ease;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+            letter-spacing: 0.2px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.22);
+            filter: brightness(1.06);
+        }
+
+        button:active:not(:disabled) {
+            transform: translateY(0px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        button:disabled {
+            opacity: 0.42;
+            cursor: not-allowed;
+        }
+
+        #start-button {
+            background: linear-gradient(135deg, #E84040, #B01818);
+            width: 100%;
+            font-size: 1.2rem;
+            padding: 13px;
+            margin-top: 10px;
+            letter-spacing: 0.4px;
+        }
+
+        #bite-button    { background: linear-gradient(135deg, #00C690, #007A58); }
+        #spoiler-button { background: linear-gradient(135deg, #E17055, #B03020); }
+        #reset-button   { background: linear-gradient(135deg, #7C8A96, #424E58); }
+
+        /* ── SPOILER CONFIRM BANNER ── */
+        #spoiler-confirm {
+            background: linear-gradient(135deg, rgba(180, 40, 20, 0.1), rgba(253, 203, 110, 0.15));
+            border: 2px solid #E17055;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-top: 12px;
+            text-align: center;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            color: var(--text-mid);
+        }
+        #spoiler-confirm p { margin-bottom: 10px; font-size: 0.95rem; }
+        .spoiler-confirm-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        #spoiler-yes { background: linear-gradient(135deg, #E17055, #B03020); }
+        #spoiler-no  { background: linear-gradient(135deg, #7C8A96, #424E58); }
+
+        .btn-row {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 10px;
-            justify-content: center;
-            font-family: 'Fredoka One', cursive; /* Joyful font for the counter */
+            margin-top: 12px;
         }
-        .color-item {
-            padding: 8px 12px;
-            border-radius: 15px;
+
+        /* ── PROBABILITY BADGE ── */
+        .probability-badge {
+            background: linear-gradient(135deg, #2D4B9B, #1A2D6B);
             color: white;
-            font-weight: bold;
+            padding: 10px 18px;
+            border-radius: 50px;
             text-align: center;
-            min-width: 100px;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 0.93rem;
+            margin: 12px 0 6px;
+            box-shadow: 0 4px 14px rgba(45, 75, 155, 0.28);
         }
-        .game-over {
+
+        /* ── GAME PARAMS ── */
+        .game-params {
+            background: linear-gradient(135deg, #FDCB6E, #F0A000);
+            color: #3D1C08;
+            padding: 10px 18px;
+            border-radius: 50px;
             text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: red;
-            margin: 10px 0;
-            padding: 10px;
-            background-color: #ffe6e6;
-            border-radius: 8px;
-            border: 2px solid red;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 0.97rem;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 14px rgba(253, 203, 110, 0.38);
         }
-        .winner {
-            color: green;
-            background-color: #e6ffe6;
-            border: 2px solid green;
+
+        .game-params span { color: #6B2800; }
+
+        /* ── PACK INFO ── */
+        .pack-info {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
         }
+
+        .stat-block {
+            flex: 1;
+            min-width: 120px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 12px 16px;
+            text-align: center;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            color: var(--text-mid);
+            border: 2px solid rgba(240, 180, 100, 0.35);
+            font-size: 0.97rem;
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-wrapper { margin-bottom: 4px; }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-mid);
+            margin-bottom: 7px;
+        }
+
+        .progress-track {
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 50px;
+            height: 18px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #E84040 0%, #FDCB6E 50%, #00C690 100%);
+            transition: width 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            min-width: 0;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 6px;
+            right: 6px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.38);
+            border-radius: 50px;
+        }
+
+        /* ── SLIDER ROW ── */
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .slider-row label { margin: 0; white-space: nowrap; min-width: 85px; }
+
+        .bite-value-badge {
+            background: var(--red);
+            color: white;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding: 2px 13px;
+            border-radius: 50px;
+            min-width: 38px;
+            text-align: center;
+        }
+
+        /* ── LENTILS (3D M&M) ── */
         .bite-display {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 4px;
+            margin-top: 8px;
             justify-content: center;
+            max-height: 190px;
+            overflow-y: auto;
+            padding: 4px 2px;
         }
-        /* 3D Lentil Style */
+
         .lentil {
-            width: 30px;
-            height: 30px;
+            width: 42px;
+            height: 33px;
             border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            overflow: hidden;
-            transform: perspective(100px) rotateX(10deg);
-            margin: 5px;
+            transform: perspective(170px) rotateX(20deg);
+            box-shadow:
+                0 7px 16px rgba(0, 0, 0, 0.38),
+                inset 0 -5px 9px rgba(0, 0, 0, 0.24),
+                inset 0 4px 9px rgba(255, 255, 255, 0.36);
+            margin: 4px;
+            flex-shrink: 0;
+            transition: opacity 0.2s;
         }
+
+        /* specular highlight */
         .lentil::before {
             content: '';
             position: absolute;
-            top: 5%;
-            left: 20%;
-            width: 25%;
-            height: 25%;
-            background: rgba(255, 255, 255, 0.6);
+            top: 7%;
+            left: 17%;
+            width: 30%;
+            height: 32%;
+            background: rgba(255, 255, 255, 0.58);
             border-radius: 50%;
+            filter: blur(1.5px);
+            pointer-events: none;
         }
+
+        /* M letter */
         .lentil::after {
-            content: '';
+            content: 'm';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%);
-        }
-        .hidden {
-            display: none;
-        }
-        .slider-value {
-            text-align: center;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-style: italic;
             font-weight: bold;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+            line-height: 1;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            pointer-events: none;
         }
-        .pack-info {
-            text-align: center;
-            font-size: 18px;
-            margin: 15px 0;
+
+        .lentil.eaten { opacity: 0.4; }
+
+        /* ── COLOR COUNTER ── */
+        .color-counter {
             display: flex;
-            justify-content: space-around;
             flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            justify-content: center;
         }
-        .game-params {
-            background-color: #e6ccb2;
-            padding: 10px;
-            border-radius: 8px;
+
+        .color-item {
+            padding: 5px 14px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            font-family: 'Baloo 2', cursive;
             text-align: center;
-            margin: 10px 0;
-            font-weight: bold;
-            color: #5c3d2e;
+            min-width: 88px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.48);
+            font-size: 0.88rem;
         }
-        #eaten-counter {
-            border-top: 2px dashed #8b4513;
-            padding-top: 15px;
-            margin-top: 20px;
-        }
+
         .total-eaten {
             text-align: center;
-            font-size: 20px;
-            margin: 15px 0;
-            font-family: 'Fredoka One', cursive;
-            color: #8b4513;
+            font-size: 1.15rem;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            color: var(--text-mid);
+            margin: 8px 0 4px;
         }
-        .probability-info {
-            background-color: #e8f4f8;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 15px;
+
+        /* ── GAME OVER ── */
+        .game-over {
             text-align: center;
-            color: #4682B4;
-            font-weight: bold;
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #c0392b;
+            padding: 14px 20px;
+            background: rgba(255, 230, 230, 0.92);
+            border-radius: var(--radius);
+            border: 2px solid #e74c3c;
+            margin-bottom: 14px;
         }
-        .info-label {
-            display: inline-block;
-            margin-right: 5px;
-            font-weight: normal;
+
+        .game-over.winner {
+            color: #00916e;
+            background: rgba(225, 255, 240, 0.92);
+            border-color: #00b894;
         }
-        .steps-counter {
-            font-weight: bold;
-            color: #8b4513;
+
+        /* ── INSTRUCTIONS ── */
+        .instructions {
+            background: linear-gradient(135deg,
+                rgba(214, 48, 49, 0.08),
+                rgba(253, 203, 110, 0.12));
+            border-left: 4px solid var(--red);
+            padding: 14px 16px;
+            border-radius: 0 16px 16px 0;
+            margin-top: 16px;
+            color: var(--text-mid);
+            font-size: 0.9rem;
+            line-height: 1.65;
         }
-        .stat-block {
-            background-color: #f0f0f0;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 5px;
-            text-align: center;
-            flex-grow: 1;
-        }
-        /* Confetti Container */
+
+        .instructions p { margin-bottom: 5px; }
+        .instructions p:last-child { margin-bottom: 0; }
+
+        /* ── MISC ── */
+        .hidden { display: none !important; }
+
+        /* ── CONFETTI ── */
         #confetti-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 1000;
         }
-        .confetti {
+
+        .confetti-piece {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: #f00;
-            opacity: 0.8;
+            top: -30px;
+            opacity: 0;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0%   { opacity: 1; transform: translateY(0px) rotate(0deg); }
+            85%  { opacity: 1; }
+            100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 480px) {
+            body { padding: 10px 10px 32px; }
+            .btn-row { gap: 8px; }
+            button { padding: 9px 16px; font-size: 0.88rem; }
+            .lentil { width: 36px; height: 28px; }
+            .lentil::after { font-size: 12px; }
+            .card { padding: 16px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>M&M by Two</h1>
-        
-        <div id="setup" class="setup">
-            <label for="pack-size">Pack Size (20-1000):</label>
-            <input type="number" id="pack-size" min="20" max="1000" value="200">
-            
-            <label for="color-count">Number of Colors (2-12):</label>
-            <input type="number" id="color-count" min="2" max="12" value="6">
-            
-            <div id="probability-info" class="probability-info">
-                Choose number of colors to see winning probability and play
-            </div>
-            
-            <button id="start-button">Start Game</button>
+<div class="container">
+    <h1>🍫 M&amp;M by Two</h1>
+    <p class="subtitle">Can you eat every color in pairs?</p>
 
-            <div class="instructions">
-            <p>Choose number of distinct colors from 2 to 12 and number of units in the package, and then press play.</p>
-            <p>In each step you need to select 2 to 12 units to sample from the package. Alternatively,
-you can click on the spoiler queue and open the entire package.</p>
-            <p>If all units distinct colors are paired, You win!</p>
+    <!-- ── SETUP ── -->
+    <div id="setup" class="card">
+        <div class="input-row">
+            <div class="input-group">
+                <label for="pack-size">Pack Size (20–1000)</label>
+                <input type="number" id="pack-size" min="20" max="1000" value="200">
+            </div>
+            <div class="input-group">
+                <label for="color-count">Colors (2–12)</label>
+                <input type="number" id="color-count" min="2" max="12" value="6">
             </div>
         </div>
 
-        
-        <div id="game-area" class="hidden">
-            <div id="game-over" class="game-over hidden"></div>
-            
-            <div id="game-params" class="game-params"></div>
-            
-            <div class="pack-info">
-                <div id="pack-remaining" class="stat-block"></div>
-                <div id="steps-counter" class="stat-block">Steps: 0</div>
-            </div>
-            
-            <div class="game-controls">
-                <label for="bite-size">Bite Size (2-12): <span id="bite-value">6</span></label>
-                <input type="range" id="bite-size" min="2" max="12" value="6">
-                
-                <button id="bite-button">Take a Bite</button>
-                <button id="spoiler-button">Spoiler (Finish Game)</button>
-                <button id="reset-button">Reset Game</button>
-            </div>
-            
-            <div class="game-info">
-                <h3>Last Bite:</h3>
-                <div id="last-bite" class="bite-display"></div>
-                
-                <h3>Eaten Lentils:</h3>
-                <div id="total-eaten" class="total-eaten"></div>
-                <div id="eaten-counter" class="color-counter"></div>
-            </div>
+        <div id="probability-info" class="probability-badge">
+            Choose number of colors to see winning probability
+        </div>
+
+        <button id="start-button">🎮 Start Game!</button>
+
+        <div class="instructions">
+            <p>Choose number of colors (2–12) and pack size, then press Start.</p>
+            <p>Each step, pick a Bite Size and sample that many M&amp;Ms. Paired colors get eaten — singles return to the pack.</p>
+            <p>🏆 If all colors pair up perfectly, you win!</p>
         </div>
     </div>
-    
-    <!-- Confetti Container -->
-    <div id="confetti-container"></div>
-   
 
-    <script>
-        // Real M&M colors
-        const COLORS = [
-            { name: "Brown", hex: "#623421" },
-            { name: "Yellow", hex: "#FDD600" },
-            { name: "Red", hex: "#E11030" },
-            { name: "Blue", hex: "#2D4B9B" },
-            { name: "Orange", hex: "#F26F22" },
-            { name: "Green", hex: "#0da82a" },
-            { name: "Purple", hex: "#7D4191" },
-            { name: "Pink", hex: "#ED85B0" },
-            { name: "Teal", hex: "#00A99D" },
-            { name: "Gray", hex: "#A0A0A0" },
-            { name: "Mustard", hex: "#aeb545" },
-            { name: "Grass", hex: "#6bbf54" } // Extra color if needed
-        ];
-        
-        // Winning probabilities by number of colors
-        const WIN_PROBABILITIES = {
-            2: "24%",
-            3: "12%",
-            4: "7%",
-            5: "3%",
-            6: "1.5%",
-            7: "0.7%",
-            8: "0.4%",
-            9: "<0.2%",
-            10: "<0.2%",
-            11: "<0.1%",
-            12: "<0.1%"
-        };
-        
-        // Game state
-        let packSize = 0;
-        let initialPackSize = 0;
-        let colorCount = 0;
-        let pack = [];
-        let eatenByColor = {};
-        let totalEaten = 0;
-        let stepsCount = 0;
-        let confettiInterval;
-        
-        // DOM elements
-        const setupDiv = document.getElementById("setup");
-        const gameArea = document.getElementById("game-area");
-        const gameParams = document.getElementById("game-params");
-        const packSizeInput = document.getElementById("pack-size");
-        const colorCountInput = document.getElementById("color-count");
-        const probabilityInfo = document.getElementById("probability-info");
-        const startButton = document.getElementById("start-button");
-        const biteSlider = document.getElementById("bite-size");
-        const biteValue = document.getElementById("bite-value");
-        const biteButton = document.getElementById("bite-button");
-        const spoilerButton = document.getElementById("spoiler-button");
-        const resetButton = document.getElementById("reset-button");
-        const packRemaining = document.getElementById("pack-remaining");
-        const stepsCounter = document.getElementById("steps-counter");
-        const lastBite = document.getElementById("last-bite");
-        const eatenCounter = document.getElementById("eaten-counter");
-        const totalEatenDiv = document.getElementById("total-eaten");
-        const gameOverDiv = document.getElementById("game-over");
-        const confettiContainer = document.getElementById("confetti-container");
+    <!-- ── GAME AREA ── -->
+    <div id="game-area" class="hidden">
+        <div id="game-over" class="game-over hidden"></div>
+        <div id="game-params" class="game-params"></div>
 
+        <!-- Progress Bar -->
+        <div class="card progress-wrapper">
+            <div class="progress-label">
+                <span>🍬 Eaten</span>
+                <span id="progress-text">0 / 0 (0%)</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+        </div>
 
-        // Event listeners
-        startButton.addEventListener("click", startGame);
-        biteButton.addEventListener("click", takeBite);
-        spoilerButton.addEventListener("click", finishGameQuickly);
-        resetButton.addEventListener("click", resetGame);
-        biteSlider.addEventListener("input", updateBiteValue);
-        colorCountInput.addEventListener("input", updateProbabilityInfo);
-        
-        // Update probability info when color count changes
-        function updateProbabilityInfo() {
-            const colors = parseInt(colorCountInput.value);
-            if (colors >= 2 && colors <= 12) {
-                probabilityInfo.innerHTML = `Winning Probability with ${colors} colors: <strong>${WIN_PROBABILITIES[colors]}</strong>`;
-            } else {
-                probabilityInfo.textContent = "Choose number of colors to see winning probability";
+        <!-- Pack Info -->
+        <div class="pack-info">
+            <div id="pack-remaining" class="stat-block">Pack: — remaining</div>
+            <div id="steps-counter" class="stat-block">Steps: 0</div>
+        </div>
+
+        <!-- Controls -->
+        <div class="card">
+            <div class="slider-row">
+                <label for="bite-size">Bite Size</label>
+                <input type="range" id="bite-size" min="2" max="12" value="6">
+                <div class="bite-value-badge" id="bite-value">6</div>
+            </div>
+            <div class="btn-row">
+                <button id="bite-button">🍬 Take a Bite</button>
+                <button id="spoiler-button">👀 Spoiler</button>
+                <button id="reset-button">🔄 Reset</button>
+            </div>
+            <div id="spoiler-confirm" class="hidden">
+                <p>Reveal the whole pack at once? This will end the game.</p>
+                <div class="spoiler-confirm-btns">
+                    <button id="spoiler-yes">✅ Yes, finish it!</button>
+                    <button id="spoiler-no">❌ Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Last bite + eaten -->
+        <div class="card">
+            <h3>Last Bite</h3>
+            <div id="last-bite" class="bite-display"></div>
+            <h3 style="margin-top:18px">Eaten M&amp;Ms</h3>
+            <div id="total-eaten" class="total-eaten"></div>
+            <div id="eaten-counter" class="color-counter"></div>
+        </div>
+    </div>
+</div>
+
+<div id="confetti-container"></div>
+
+<script>
+    /* ─── DATA ─── */
+    const COLORS = [
+        { name: "Brown",   hex: "#623421", light: "#8B5A3C", dark: "#3D1A0A" },
+        { name: "Yellow",  hex: "#FDD600", light: "#FFEC70", dark: "#BFA000" },
+        { name: "Red",     hex: "#E11030", light: "#FF4A60", dark: "#A00020" },
+        { name: "Blue",    hex: "#2D4B9B", light: "#4D6BBB", dark: "#0D2B7B" },
+        { name: "Orange",  hex: "#F26F22", light: "#FF9550", dark: "#B04010" },
+        { name: "Green",   hex: "#0da82a", light: "#3DC850", dark: "#006A18" },
+        { name: "Purple",  hex: "#7D4191", light: "#9D61B1", dark: "#4D2171" },
+        { name: "Pink",    hex: "#ED85B0", light: "#FFAAD0", dark: "#BD5580" },
+        { name: "Teal",    hex: "#00A99D", light: "#30C9BD", dark: "#00796D" },
+        { name: "Gray",    hex: "#A0A0A0", light: "#C4C4C4", dark: "#686868" },
+        { name: "Mustard", hex: "#aeb545", light: "#CEDD65", dark: "#7E8525" },
+        { name: "Grass",   hex: "#6bbf54", light: "#8BDF74", dark: "#3B8F34" }
+    ];
+
+    const WIN_PROBABILITIES = {
+        2:"24%", 3:"12%", 4:"7%", 5:"3%", 6:"1.5%",
+        7:"0.7%", 8:"0.4%", 9:"<0.2%", 10:"<0.2%",
+        11:"<0.1%", 12:"<0.1%"
+    };
+
+    /* ─── STATE ─── */
+    let packSize = 0, initialPackSize = 0, colorCount = 0;
+    let pack = [], eatenByColor = {}, totalEaten = 0, stepsCount = 0;
+    let confettiInterval;
+
+    /* ─── DOM ─── */
+    const setupDiv        = document.getElementById("setup");
+    const gameArea        = document.getElementById("game-area");
+    const gameParams      = document.getElementById("game-params");
+    const packSizeInput   = document.getElementById("pack-size");
+    const colorCountInput = document.getElementById("color-count");
+    const probabilityInfo = document.getElementById("probability-info");
+    const startButton     = document.getElementById("start-button");
+    const biteSlider      = document.getElementById("bite-size");
+    const biteValueBadge  = document.getElementById("bite-value");
+    const biteButton      = document.getElementById("bite-button");
+    const spoilerButton   = document.getElementById("spoiler-button");
+    const resetButton     = document.getElementById("reset-button");
+    const packRemaining   = document.getElementById("pack-remaining");
+    const stepsCounter    = document.getElementById("steps-counter");
+    const lastBite        = document.getElementById("last-bite");
+    const eatenCounter    = document.getElementById("eaten-counter");
+    const totalEatenDiv   = document.getElementById("total-eaten");
+    const gameOverDiv     = document.getElementById("game-over");
+    const confettiCont    = document.getElementById("confetti-container");
+    const progressFill    = document.getElementById("progress-fill");
+    const progressText    = document.getElementById("progress-text");
+    const spoilerConfirm  = document.getElementById("spoiler-confirm");
+    const spoilerYes      = document.getElementById("spoiler-yes");
+    const spoilerNo       = document.getElementById("spoiler-no");
+
+    /* ─── LISTENERS ─── */
+    startButton.addEventListener("click", startGame);
+    biteButton.addEventListener("click", takeBite);
+    spoilerButton.addEventListener("click", () => { spoilerConfirm.classList.remove("hidden"); });
+    spoilerYes.addEventListener("click", () => { spoilerConfirm.classList.add("hidden"); finishGameQuickly(); });
+    spoilerNo.addEventListener("click",  () => { spoilerConfirm.classList.add("hidden"); });
+    resetButton.addEventListener("click", resetGame);
+    biteSlider.addEventListener("input", () => { biteValueBadge.textContent = biteSlider.value; });
+    colorCountInput.addEventListener("input", updateProbabilityInfo);
+
+    /* ─── HELPERS ─── */
+    function updateProbabilityInfo() {
+        const c = parseInt(colorCountInput.value);
+        if (c >= 2 && c <= 12) {
+            probabilityInfo.textContent =
+                `Winning probability with ${c} colors: ${WIN_PROBABILITIES[c]}`;
+        } else {
+            probabilityInfo.textContent = "Choose number of colors to see winning probability";
+        }
+    }
+
+    /** Build a 3D lentil element using precomputed light/dark shades */
+    function makeLentil(colorIndex, eaten) {
+        const lentil = document.createElement("div");
+        lentil.className = "lentil" + (eaten ? " eaten" : "");
+        const c = COLORS[colorIndex];
+        lentil.style.background =
+            `radial-gradient(ellipse at 38% 32%, ${c.light}, ${c.hex} 52%, ${c.dark})`;
+        return lentil;
+    }
+
+    /** Keep the bite slider's max in sync with how many M&Ms remain */
+    function syncSlider() {
+        const newMax = Math.max(2, Math.min(12, pack.length));
+        biteSlider.max = newMax;
+        if (parseInt(biteSlider.value) > newMax) {
+            biteSlider.value = newMax;
+            biteValueBadge.textContent = newMax;
+        }
+    }
+
+    /* ─── START GAME ─── */
+    function startGame() {
+        packSize   = parseInt(packSizeInput.value);
+        colorCount = parseInt(colorCountInput.value);
+
+        if (isNaN(packSize) || packSize < 20 || packSize > 1000) {
+            alert("Pack size must be between 20 and 1000!"); return;
+        }
+        if (isNaN(colorCount) || colorCount < 2 || colorCount > 12) {
+            alert("Number of colors must be between 2 and 12!"); return;
+        }
+
+        initialPackSize = packSize;
+        pack = [];
+        eatenByColor = {};
+        totalEaten = 0;
+        stepsCount = 0;
+
+        for (let i = 0; i < packSize; i++) {
+            pack.push(Math.floor(Math.random() * colorCount));
+        }
+        for (let i = 0; i < colorCount; i++) eatenByColor[i] = 0;
+
+        gameParams.innerHTML =
+            `Pack: <span>${packSize}</span> &nbsp;•&nbsp; Colors: <span>${colorCount}</span> &nbsp;•&nbsp; Win chance: <span>${WIN_PROBABILITIES[colorCount]}</span>`;
+
+        setupDiv.classList.add("hidden");
+        gameArea.classList.remove("hidden");
+        gameOverDiv.classList.add("hidden");
+        gameOverDiv.classList.remove("winner");
+        biteButton.disabled = false;
+        spoilerButton.disabled = false;
+
+        biteSlider.min   = 2;
+        biteSlider.max   = Math.min(12, packSize);
+        biteSlider.value = Math.min(6, biteSlider.max);
+        biteValueBadge.textContent = biteSlider.value;
+
+        lastBite.innerHTML = "";
+        stepsCounter.textContent = "Steps: 0";
+        spoilerConfirm.classList.add("hidden");
+        updatePackInfo();
+        updateEatenCounter();
+        updateProgress();
+        stopConfetti();
+        confettiCont.innerHTML = "";
+    }
+
+    /* ─── TAKE A BITE ─── */
+    function takeBite() {
+        const biteSize = parseInt(biteSlider.value);
+        if (pack.length < biteSize) return; // safety guard (should not happen after syncSlider)
+
+        stepsCount++;
+        stepsCounter.textContent = `Steps: ${stepsCount}`;
+
+        const bite = [];
+        for (let i = 0; i < biteSize; i++) {
+            const idx = Math.floor(Math.random() * pack.length);
+            bite.push(pack[idx]);
+            pack.splice(idx, 1);
+        }
+
+        processLentils(bite);
+        checkGameOver();
+    }
+
+    /* ─── SPOILER ─── */
+    function finishGameQuickly() {
+        stepsCount++;
+        stepsCounter.textContent = `Steps: ${stepsCount}`;
+        lastBite.innerHTML = "";
+
+        // Count remaining lentils by color
+        const colorCounts = {};
+        for (const c of pack) colorCounts[c] = (colorCounts[c] || 0) + 1;
+
+        let remainingSingles = 0;
+
+        for (const color in colorCounts) {
+            const ci      = parseInt(color);
+            const count   = colorCounts[color];
+            const pairs   = Math.floor(count / 2);
+            const singles = count % 2;
+
+            // Eat pairs — count toward progress bar
+            if (pairs > 0) {
+                eatenByColor[ci] += pairs * 2;
+                totalEaten       += pairs * 2;
+            }
+
+            // FIX: add singles to eatenByColor so their color badge appears in the counter
+            // (not counted in totalEaten / progress, they are unpaired)
+            if (singles > 0) {
+                eatenByColor[ci] += singles;
+                remainingSingles += singles;
+            }
+
+            // Render all lentils in the last-bite display
+            for (let i = 0; i < count; i++) {
+                lastBite.appendChild(makeLentil(ci, i < pairs * 2));
             }
         }
-        
-        // Update bite value display when slider moves
-        function updateBiteValue() {
-            biteValue.textContent = biteSlider.value;
-        }
-        
-        // Start a new game
-        function startGame() {
-            packSize = parseInt(packSizeInput.value);
-            colorCount = parseInt(colorCountInput.value);
-            initialPackSize = packSize; // Save initial pack size
-            
-            // Validate inputs
-            if (packSize < 20 || packSize > 1000 || isNaN(packSize)) {
-                alert("Pack size must be between 20 and 1000!");
-                return;
-            }
-            
-            if (colorCount < 2 || colorCount > 12 || isNaN(colorCount)) {
-                alert("Number of colors must be between 2 and 12!");
-                return;
-            }
-            
-            // Initialize game state
-            pack = [];
-            eatenByColor = {};
-            totalEaten = 0;
-            stepsCount = 0;
-            
-            // Generate random lentils
-            for (let i = 0; i < packSize; i++) {
-                const colorIndex = Math.floor(Math.random() * colorCount);
-                pack.push(colorIndex);
-            }
-            
-            // Initialize eaten counter for each color
-            for (let i = 0; i < colorCount; i++) {
-                eatenByColor[i] = 0;
-            }
-            
-            // Display game parameters with winning probability
-            gameParams.innerHTML = `Pack Size: <span style="color: #4682B4;">${packSize}</span> • Colors: <span style="color: #4682B4;">${colorCount}</span> • Winning Probability: <span style="color: #4682B4;">${WIN_PROBABILITIES[colorCount]}</span>`;
-            
-            // Toggle UI elements
-            setupDiv.classList.add("hidden");
-            gameArea.classList.remove("hidden");
-            gameOverDiv.classList.add("hidden");
-            
-            // Update UI
-            updatePackInfo();
-            updateEatenCounter();
-            lastBite.innerHTML = "";
-            stepsCounter.textContent = "Steps: 0";
-            
-            // Clear any existing confetti
-            stopConfetti();
-            confettiContainer.innerHTML = "";
-        }
-        
-        // Take a bite from the pack
-        function takeBite() {
-            const biteSize = parseInt(biteSlider.value);
-            
-            if (pack.length < biteSize) {
-                alert("Not enough lentils left for this bite size!");
-                return;
-            }
-            
-            // Increment steps counter
-            stepsCount++;
-            stepsCounter.textContent = `Steps: ${stepsCount}`;
-            
-            // Take random lentils from the pack
-            const bite = [];
-            for (let i = 0; i < biteSize; i++) {
-                const index = Math.floor(Math.random() * pack.length);
-                bite.push(pack[index]);
-                pack.splice(index, 1); // Remove from pack correctly
-            }
-            
-            // Process the bite (remove pairs, return singles)
-            processLentils(bite);
-            
-            // Check for game over condition
-            checkGameOver();
-        }
-        
-        // Spoiler function to finish game quickly - take all remaining lentils at once
-        function finishGameQuickly() {
-            if (confirm("Are you sure you want to use the spoiler and finish the game?")) {
-                // Increment steps counter
-                stepsCount++;
-                stepsCounter.textContent = `Steps: ${stepsCount}`;
-                
-                // Clear last bite display
-                lastBite.innerHTML = "";
-                
-                // Process all lentils from the pack
-                // Create a copy of the pack for display purposes
-                const allLentils = [...pack];
-                
-                // Count by color
-                const colorCounts = {};
-                for (const color of allLentils) {
-                    if (!colorCounts[color]) {
-                        colorCounts[color] = 0;
-                    }
-                    colorCounts[color]++;
-                }
-                
-                // Track remaining singles
-                let remainingSingles = 0;
-                
-                // Process each color
-                for (const color in colorCounts) {
-                    const colorIndex = parseInt(color);
-                    const count = colorCounts[color];
-                    const pairs = Math.floor(count / 2);
-                    const singles = count % 2;
-                    
-                    // Update eaten counter for pairs
-                    if (pairs > 0) {
-                        eatenByColor[colorIndex] += pairs * 2;
-                        totalEaten += pairs * 2;
-                    }
-                    
-                    // Count singles
-                    if (singles > 0) {
-                        remainingSingles += singles;
-                    }
-                    
-                    // Display all lentils in last bite
-                    for (let i = 0; i < count; i++) {
-                        const lentil = document.createElement("div");
-                        lentil.className = "lentil";
-                        lentil.style.backgroundColor = COLORS[colorIndex].hex;
-                        
-                        // Mark pairs as eaten with reduced opacity
-                        if (i < pairs * 2) {
-                            lentil.style.opacity = "0.5";
-                        }
-                        
-                        lastBite.appendChild(lentil);
-                    }
-                }
-                
-                // Clear the pack since we've processed everything
-                pack = [];
-                
-                // Update UI
-                updatePackInfo();
-                updateEatenCounter();
-                
-                // Show game over message
-                if (remainingSingles === 0) {
-                    gameOverDiv.innerHTML = "Game Over: You win!";
-                    gameOverDiv.classList.add("winner");
-                    startConfetti(); // Start confetti animation for winners
-                } else {
-                    gameOverDiv.innerHTML = `Game Over! ${remainingSingles} lentils were left unpaired out of ${initialPackSize}.`;
-                    gameOverDiv.classList.remove("winner");
-                }
-                
-                gameOverDiv.classList.remove("hidden");
-                biteButton.disabled = true;
-                spoilerButton.disabled = true;
-            }
-        }
-        
-        // Process lentils - remove pairs, return singles
-        function processLentils(bite) {
-            // Count lentils by color
-            const colorCounts = {};
-            for (let i = 0; i < bite.length; i++) {
-                const color = bite[i];
-                if (!colorCounts[color]) {
-                    colorCounts[color] = 0;
-                }
-                colorCounts[color]++;
-            }
-            
-            // Clear last bite display
-            lastBite.innerHTML = "";
-            
-            // Process each color
-            for (const color in colorCounts) {
-                const colorIndex = parseInt(color);
-                const count = colorCounts[color];
-                const pairs = Math.floor(count / 2);
-                const singles = count % 2;
-                
-                // Update eaten counter
-                if (pairs > 0) {
-                    eatenByColor[colorIndex] += pairs * 2;
-                    totalEaten += pairs * 2;
-                }
-                
-                // Return singles to pack
-                for (let i = 0; i < singles; i++) {
-                    pack.push(colorIndex);
-                }
-                
-                // Display in last bite
-                for (let i = 0; i < count; i++) {
-                    const lentil = document.createElement("div");
-                    lentil.className = "lentil";
-                    lentil.style.backgroundColor = COLORS[colorIndex].hex;
-                    
-                    // Add reduced opacity for paired (eaten) lentils
-                    if (i < pairs * 2) {
-                        lentil.style.opacity = "0.5";
-                    }
-                    
-                    lastBite.appendChild(lentil);
-                }
-            }
-            
-            // Update UI
-            updatePackInfo();
-            updateEatenCounter();
-        }
-        
-        // Check if the game can continue (are there any pairs left?)
-        function canContinue() {
-            if (pack.length === 0) return false;
-            
-            const colorCounts = {};
-            for (let i = 0; i < pack.length; i++) {
-                const color = pack[i];
-                if (!colorCounts[color]) {
-                    colorCounts[color] = 0;
-                }
-                colorCounts[color]++;
-            }
-            
-            // Check if any color has at least 2 lentils
-            for (const color in colorCounts) {
-                if (colorCounts[color] >= 2) {
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-        
-        // Check for game over condition
-        function checkGameOver() {
-            if (!canContinue()) {
-                if (pack.length === 0) {
-                    gameOverDiv.innerHTML = "Game Over: You win!";
-                    gameOverDiv.classList.add("winner");
-                    startConfetti(); // Start confetti animation for winners
-                } else {
-                    gameOverDiv.innerHTML = `Game Over! ${pack.length} lentils were left out of ${initialPackSize}.`;
-                    gameOverDiv.classList.remove("winner");
-                }
-                gameOverDiv.classList.remove("hidden");
-                biteButton.disabled = true;
-                spoilerButton.disabled = true;
-            }
-        }
-        
-        // Update the pack information display
-        function updatePackInfo() {
-            packRemaining.textContent = `Pack: ${pack.length} lentils remaining`;
-        }
-        
-        // Update the eaten counter display
-        function updateEatenCounter() {
-            eatenCounter.innerHTML = "";
-            totalEatenDiv.textContent = `Total Eaten: ${totalEaten}`;
-            
-            for (let i = 0; i < colorCount; i++) {
-                if (eatenByColor[i] > 0) {
-                    const colorItem = document.createElement("div");
-                    colorItem.className = "color-item";
-                    colorItem.style.backgroundColor = COLORS[i].hex;
-                    colorItem.textContent = `${COLORS[i].name}: ${eatenByColor[i]}`;
-                    eatenCounter.appendChild(colorItem);
-                }
-            }
-        }
-        
-        // Reset the game
-        function resetGame() {
-            setupDiv.classList.remove("hidden");
-            gameArea.classList.add("hidden");
-            biteButton.disabled = false;
-            spoilerButton.disabled = false;
-            gameOverDiv.classList.add("hidden");
+
+        pack = [];
+        updatePackInfo();
+        updateEatenCounter();
+        updateProgress();
+
+        if (remainingSingles === 0) {
+            gameOverDiv.textContent = "🎉 You win! All M&Ms paired perfectly!";
+            gameOverDiv.classList.add("winner");
+            startConfetti();
+        } else {
+            gameOverDiv.textContent =
+                `Game over! ${remainingSingles} M&M${remainingSingles > 1 ? "s" : ""} left unpaired out of ${initialPackSize}.`;
             gameOverDiv.classList.remove("winner");
-            pack = [];
-            eatenByColor = {};
-            totalEaten = 0;
-            stepsCount = 0;
-            updateProbabilityInfo();
-            stopConfetti();
-            confettiContainer.innerHTML = "";
         }
-        
-        // Confetti Animation
-        function createConfetti() {
-            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', 
-                           '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', 
-                           '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
-            
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            
-            // Random position, color, size and rotation
-            const left = Math.random() * 100;
-            const width = Math.random() * 12 + 5;
-            const height = Math.random() * 12 + 5;
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            const rotation = Math.random() * 360;
-            const shape = Math.random() > 0.5 ? '50%' : '0%';
-            
-            confetti.style.left = left + 'vw';
-            confetti.style.width = width + 'px';
-            confetti.style.height = height + 'px';
-            confetti.style.backgroundColor = color;
-            confetti.style.transform = 'rotate(' + rotation + 'deg)';
-            confetti.style.borderRadius = shape;
-            confetti.style.top = '-20px';
-            
-            confettiContainer.appendChild(confetti);
-            
-            // Animation
-            let topPosition = -20;
-            const fallSpeed = Math.random() * 3 + 2;
-            const swayAmount = Math.random() * 5 - 2.5;
-            let swayPos = left;
-            let swayDirection = Math.random() > 0.5 ? 1 : -1;
-            
-            const fallAnimation = setInterval(() => {
-                topPosition += fallSpeed;
-                swayPos += swayDirection * swayAmount / 10;
-                
-                if (Math.random() < 0.1) swayDirection *= -1;
-                
-                confetti.style.top = topPosition + 'px';
-                confetti.style.left = swayPos + 'vw';
-                
-                if (topPosition > window.innerHeight) {
-                    clearInterval(fallAnimation);
-                    confetti.remove();
-                }
-            }, 50);
-        }
-        
-        function startConfetti() {
-            stopConfetti(); // Clear any existing confetti first
-            confettiInterval = setInterval(() => {
-                for (let i = 0; i < 3; i++) {
-                    createConfetti();
-                }
-            }, 100);
-            
-            // Stop after 8 seconds
-            setTimeout(() => {
-                stopConfetti();
-            }, 8000);
-        }
-        
-        function stopConfetti() {
-            if (confettiInterval) {
-                clearInterval(confettiInterval);
+
+        gameOverDiv.classList.remove("hidden");
+        biteButton.disabled   = true;
+        spoilerButton.disabled = true;
+    }
+
+    /* ─── PROCESS LENTILS (normal bite) ─── */
+    function processLentils(bite) {
+        const colorCounts = {};
+        for (const c of bite) colorCounts[c] = (colorCounts[c] || 0) + 1;
+
+        lastBite.innerHTML = "";
+
+        for (const color in colorCounts) {
+            const ci      = parseInt(color);
+            const count   = colorCounts[color];
+            const pairs   = Math.floor(count / 2);
+            const singles = count % 2;
+
+            if (pairs > 0) {
+                eatenByColor[ci] += pairs * 2;
+                totalEaten       += pairs * 2;
+            }
+
+            // Return singles to pack
+            for (let i = 0; i < singles; i++) pack.push(ci);
+
+            for (let i = 0; i < count; i++) {
+                lastBite.appendChild(makeLentil(ci, i < pairs * 2));
             }
         }
-        
-        // Initialize probability info on load
+
+        updatePackInfo();
+        updateEatenCounter();
+        updateProgress();
+    }
+
+    /* ─── CAN CONTINUE ─── */
+    function canContinue() {
+        if (pack.length === 0) return false;
+        const cc = {};
+        for (const c of pack) cc[c] = (cc[c] || 0) + 1;
+        return Object.values(cc).some(v => v >= 2);
+    }
+
+    /* ─── CHECK GAME OVER ─── */
+    function checkGameOver() {
+        if (!canContinue()) {
+            if (pack.length === 0) {
+                gameOverDiv.textContent = "🎉 You win! All M&Ms paired perfectly!";
+                gameOverDiv.classList.add("winner");
+                startConfetti();
+            } else {
+                gameOverDiv.textContent =
+                    `Game over! ${pack.length} M&M${pack.length > 1 ? "s" : ""} left unpaired out of ${initialPackSize}.`;
+                gameOverDiv.classList.remove("winner");
+            }
+            gameOverDiv.classList.remove("hidden");
+            biteButton.disabled   = true;
+            spoilerButton.disabled = true;
+        }
+    }
+
+    /* ─── UPDATE PACK INFO ─── */
+    function updatePackInfo() {
+        packRemaining.textContent = `Pack: ${pack.length} remaining`;
+        syncSlider(); // FIX: keep slider max in sync so the alert never fires
+    }
+
+    /* ─── UPDATE PROGRESS BAR ─── */
+    function updateProgress() {
+        const pct = initialPackSize > 0
+            ? Math.round((totalEaten / initialPackSize) * 100) : 0;
+        progressFill.style.width = pct + "%";
+        progressText.textContent = `${totalEaten} / ${initialPackSize} (${pct}%)`;
+    }
+
+    /* ─── UPDATE EATEN COUNTER ─── */
+    function updateEatenCounter() {
+        eatenCounter.innerHTML = "";
+        totalEatenDiv.textContent = `Total Eaten: ${totalEaten}`;
+
+        for (let i = 0; i < colorCount; i++) {
+            if (eatenByColor[i] > 0) {
+                const item = document.createElement("div");
+                item.className = "color-item";
+                item.style.backgroundColor = COLORS[i].hex;
+                item.textContent = `${COLORS[i].name}: ${eatenByColor[i]}`;
+                eatenCounter.appendChild(item);
+            }
+        }
+    }
+
+    /* ─── RESET ─── */
+    function resetGame() {
+        setupDiv.classList.remove("hidden");
+        gameArea.classList.add("hidden");
+        biteButton.disabled   = false;
+        spoilerButton.disabled = false;
+        gameOverDiv.classList.add("hidden");
+        gameOverDiv.classList.remove("winner");
+        pack = [];
+        eatenByColor = {};
+        totalEaten = 0;
+        stepsCount = 0;
+        stopConfetti();
+        confettiCont.innerHTML = "";
+        spoilerConfirm.classList.add("hidden");
         updateProbabilityInfo();
-    </script>
+    }
+
+    /* ─── CONFETTI ─── */
+    // Shapes: circle, square, thin strip, wide strip
+    const CONFETTI_SHAPES = [
+        { w: 10, h: 10, r: '50%' },       // circle
+        { w: 10, h: 10, r: '2px' },       // square
+        { w: 4,  h: 18, r: '2px' },       // tall strip
+        { w: 18, h: 5,  r: '2px' },       // wide strip
+        { w: 8,  h: 8,  r: '1px' },       // small square
+    ];
+    const CONFETTI_COLORS = [
+        '#f44336','#e91e63','#9c27b0','#3f51b5',
+        '#2196f3','#00bcd4','#4CAF50','#FFEB3B',
+        '#FFC107','#FF5722','#00E676','#FF4081'
+    ];
+
+    function startConfetti() {
+        stopConfetti();
+        confettiCont.innerHTML = "";
+
+        const TOTAL   = 120;   // pieces spawned in one burst
+        const DURATION = 8000; // ms total fall time (matches CSS)
+
+        for (let i = 0; i < TOTAL; i++) {
+            const shape = CONFETTI_SHAPES[Math.floor(Math.random() * CONFETTI_SHAPES.length)];
+            const color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+
+            const el = document.createElement('div');
+            el.className = 'confetti-piece';
+
+            // Stagger: spawn over the first 1.5s
+            const delay    = Math.random() * 1500;
+            // Duration: 5s–8s per piece
+            const duration = 5000 + Math.random() * 3000;
+            // Horizontal sway: CSS custom property used in animation
+            const swayPx   = (Math.random() - 0.5) * 300;
+
+            el.style.cssText = [
+                `left:${Math.random() * 100}vw`,
+                `width:${shape.w}px`,
+                `height:${shape.h}px`,
+                `background:${color}`,
+                `border-radius:${shape.r}`,
+                `animation-duration:${duration}ms`,
+                `animation-delay:${delay}ms`,
+                // subtle horizontal drift via translateX inside the keyframe isn't
+                // easily parametric without JS, so we handle it here:
+                `transform:rotate(${Math.random() * 360}deg) translateX(${swayPx * 0}px)`,
+            ].join(';');
+
+            // Override keyframe to include horizontal drift using a WAAPI animation
+            el.animate([
+                { opacity: 1, transform: `translateY(0px) translateX(0px) rotate(${Math.random()*360}deg)` },
+                { opacity: 1, transform: `translateY(55vh)  translateX(${swayPx * 0.5}px) rotate(${Math.random()*720}deg)`, offset: 0.5 },
+                { opacity: 0, transform: `translateY(110vh) translateX(${swayPx}px) rotate(${Math.random()*1080}deg)` }
+            ], {
+                duration,
+                delay,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                fill: 'forwards'
+            });
+
+            // Remove element after it's done
+            setTimeout(() => { el.remove(); }, delay + duration + 50);
+
+            confettiCont.appendChild(el);
+        }
+
+        // Clear container after everything is done
+        setTimeout(stopConfetti, DURATION + 2000);
+    }
+
+    function stopConfetti() {
+        clearInterval(confettiInterval);
+        // Cancel all running WAAPI animations and remove elements
+        confettiCont.querySelectorAll('.confetti-piece').forEach(el => {
+            el.getAnimations().forEach(a => a.cancel());
+            el.remove();
+        });
+    }
+
+    /* ─── INIT ─── */
+    updateProbabilityInfo();
+</script>
 </body>
 </html>
