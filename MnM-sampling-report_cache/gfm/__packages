@@ -1,3 +1,5 @@
+MASS
+scales
 tidyverse
 ggplot2
 tibble
@@ -8,8 +10,6 @@ dplyr
 stringr
 forcats
 lubridate
-MASS
-scales
 stargazer
 viridisLite
 viridis

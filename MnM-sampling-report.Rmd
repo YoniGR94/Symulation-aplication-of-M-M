@@ -61,9 +61,9 @@ bag_g= 250          #common weight of M&M package
 n_unit= bag_g/gram  #M&M per package
 ```
 ```{r packages, message=FALSE, warning=FALSE, echo=FALSE}
-library(tidyverse)
 library(MASS) #calculate distribution parameters
 library(scales)
+library(tidyverse)
 library(patchwork) #combine 2 plots
 library(stargazer) #regression presentation
 ```
@@ -175,13 +175,12 @@ colors_summary_df<-rbind(
   rename("Var" ="sapply(MnM_sample[, 1:6], var, na.rm = 1)") %>% 
   mutate(Var= round(Var,2))
 
-knitr::kable(colors_summary_df, caption = "summary of all colors Distibution")
+knitr::kable(colors_summary_df, caption = "summary of all colors Distribution")
 ```
 
 Here we can see the distribution of all colors to be even and of one example color (red)
 
 ```{r ggplot all colors and red, warning=FALSE, error=FALSE, echo=F}
-
 red_1<- MnM_sample %>%
   mutate(is.even = even_count %%2 ==0) %>% 
   ggplot(aes(x= even_count, fill= is.even))+
@@ -189,7 +188,7 @@ red_1<- MnM_sample %>%
   geom_bar()+
     geom_text(stat = "count",
     aes(label = ..count..),vjust = -0.5)+
-  labs(title="Distibution of Eveness of Colors",
+  labs(title="Distribution of Eveness of Colors",
        x= "count of evens",
        y= "count",
        fill= "is even"
@@ -200,7 +199,7 @@ red_2<- MnM_sample %>%
   ggplot(aes(x= Red, fill= is.even))+
   scale_fill_manual(values = c("red", "red4"))+
   geom_bar()+
-  labs(title="Distibution of the Red Color",
+  labs(title="Distribution of the Red Color",
        x= "No. of red",
        y= "count",
        fill= "is even")+
@@ -210,7 +209,7 @@ red_1+red_2
 detach("package:patchwork", unload=TRUE)
 ```
 
-## Statisics Checking of the Simullation
+## Statistics Checking of the Simulation
 
 ### Test Expected Value
 
@@ -261,7 +260,9 @@ for (i in 1:num_cols) {
     }
   }
 }
+```
 
+```{r P.value test res, echo=FALSE}
 round(as.data.frame(p_value_matrix),3) %>%
   mutate(color_1= rownames(p_value_matrix)) %>% 
   pivot_longer(cols = 1:6, names_to = "color_2", values_to = "t_test") %>% 
@@ -317,7 +318,7 @@ MnM_sample %>% #plot density
   stat_function(fun = dgamma, args = list(shape = shape_est, scale = scale_est), 
                 color = "red3", alpha= 0.7) +
   labs(title = "Color Variance vs Gamma Distribution",
-       subtitle = "comparing Variance of lentils colors to equivalent Gamma distibution",
+       subtitle = "comparing Variance of lentils colors to equivalent Gamma distribution",
        x = "Variance",
        y = "") +
   scale_y_continuous(label=scales::label_percent(.1)) + 
@@ -328,8 +329,8 @@ MnM_sample %>% #plot density
 
 ```{r are all even, warning=FALSE, error=FALSE, echo=F}
 MnM_sample %>%
-  select_(1,2,3,4,5,6) %>%
-  mutate(count_even = rowSums(across(1:6, ~ .x %% 2 == 0))) %>%
+  dplyr::select(1:6) %>%
+  mutate(count_even = rowSums(across(everything(), ~ .x %% 2 == 0))) %>%
   count(count_even) %>%
   ggplot(aes(x = factor(count_even), y = n, fill = n)) +  # make x categorical
   geom_bar(stat = "identity", color= "grey20") +
@@ -492,7 +493,7 @@ Here we can see the smallest % of Lentils in one color as seen in my sample:
 
 ```{r smallest color vs expected, warning=FALSE, error=FALSE, echo=F}
 mega_snack_1 %>% 
-  select_(1,2,8) %>% 
+  dplyr::select(1,2,8) %>% 
   mutate(smallest_to_mu= smallest_col*n_color/n_unit) %>%
    ggplot(aes(x = factor(round(n_unit, 1)), y = n_color, fill = smallest_to_mu))+
   geom_tile(color = "white") +
@@ -604,7 +605,7 @@ mega_snack_2 %>%
 
 ### Data Structure
 
-The simulation created a random samples of snack packs, which was proven to be statistically random with known $\mu$ and $\sigma^2$. I created one sample with specific size and numbers of colors using "sample_MnM", and costume multiple samples using "mega_snack". Then, I check the relevand indicators fot this project.
+The simulation created a random samples of snack packs, which was proven to be statistically random with known $\mu$ and $\sigma^2$. I created one sample with specific size and numbers of colors using "sample_MnM", and costume multiple samples using "mega_snack". Then, I check the relevant indicators for this project.
 
 I found out that:
 
@@ -618,7 +619,7 @@ suggestion for any random sampler factory (like candies, Lego, toys):
 
 1. Smaller packages need more diversity check
 
-2. Althernatively, I would recomand calculate the amount of each type in small packages
+2. alternatively, I would recommend calculate the amount of each type in small packages
 
 ### Main Q: Eating M&M by Two
 

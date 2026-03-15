@@ -1,7 +1,7 @@
 Statistical Analysis of Random Distribution in M&M Packages
 ================
 Yoni
-21 04, 2025
+16 03, 2026
 
 # Intro
 
@@ -97,15 +97,15 @@ key parameters for `sample_MnM`
 
     ## [1] "One bag of 100:"
 
-    ##      1  2  3  4  5  6
-    ## [1,] 7 20 15 20 17 21
+    ##       1  2  3  4  5  6
+    ## [1,] 19 15 18 20 17 11
 
     ## [1] "3 bags of 100:"
 
     ##       Red Blue Green Orange Yellow Brown
-    ## Bag_1  16   13    22     22     11    17
-    ## Bag_2  16   17    15     23     20     9
-    ## Bag_3  21   15    16     15     13    20
+    ## Bag_1  17   16    16     14     20    18
+    ## Bag_2  17   14    20     20     16    14
+    ## Bag_3  25   18    13     12     19    14
 
 ## Preview Graph
 
@@ -132,10 +132,10 @@ here are the first rows:
 
 | Red | Blue | Green | Orange | Yellow | Brown | even_count | even_evens | low_col | Variance | min | all_even |
 |---:|---:|---:|---:|---:|---:|---:|:---|---:|---:|---:|:---|
-| 48 | 38 | 44 | 51 | 44 | 50 | 5 | FALSE | 0 | 23.37 | 38 | FALSE |
-| 46 | 39 | 44 | 47 | 46 | 53 | 3 | FALSE | 0 | 20.57 | 39 | FALSE |
-| 51 | 45 | 46 | 43 | 56 | 33 | 2 | TRUE | 0 | 60.67 | 33 | FALSE |
-| 45 | 40 | 42 | 62 | 37 | 49 | 3 | FALSE | 0 | 79.77 | 37 | FALSE |
+| 40 | 49 | 45 | 40 | 54 | 47 | 3 | FALSE | 0 | 29.37 | 40 | FALSE |
+| 60 | 45 | 40 | 38 | 45 | 46 | 4 | TRUE | 0 | 59.47 | 38 | FALSE |
+| 45 | 46 | 47 | 40 | 45 | 51 | 2 | TRUE | 0 | 12.67 | 40 | FALSE |
+| 43 | 42 | 58 | 46 | 47 | 39 | 3 | FALSE | 0 | 43.77 | 39 | FALSE |
 
 M&M sample random rows
 
@@ -143,21 +143,21 @@ I summarized the sample by color bellow
 
 |        | Min. | 1st Qu. | Median |   Mean | 3rd Qu. | Max. |   Var |
 |:-------|-----:|--------:|-------:|-------:|--------:|-----:|------:|
-| Red    |   27 |      42 |     46 | 45.747 |   50.00 |   71 | 35.51 |
-| Blue   |   28 |      41 |     45 | 45.330 |   49.00 |   70 | 37.88 |
-| Green  |   26 |      42 |     46 | 46.099 |   50.00 |   65 | 34.68 |
-| Orange |   26 |      41 |     45 | 45.498 |   49.25 |   68 | 37.18 |
-| Yellow |   26 |      41 |     45 | 45.677 |   50.00 |   64 | 38.91 |
-| Brown  |   30 |      42 |     46 | 46.155 |   50.00 |   72 | 38.83 |
+| Red    |   28 |      42 |     46 | 45.816 |      50 |   76 | 37.32 |
+| Blue   |   29 |      42 |     46 | 45.754 |      50 |   68 | 38.42 |
+| Green  |   29 |      41 |     46 | 45.844 |      50 |   66 | 40.62 |
+| Orange |   24 |      41 |     46 | 45.969 |      50 |   68 | 41.99 |
+| Yellow |   26 |      41 |     45 | 45.386 |      49 |   65 | 35.72 |
+| Brown  |   27 |      41 |     46 | 45.725 |      50 |   67 | 38.34 |
 
-summary of all colors Distibution
+summary of all colors Distribution
 
 Here we can see the distribution of all colors to be even and of one
 example color (red)
 
 ![](MnM-sampling-report_files/figure-gfm/ggplot%20all%20colors%20and%20red-1.png)<!-- -->
 
-## Statisics Checking of the Simullation
+## Statistics Checking of the Simulation
 
 ### Test Expected Value
 
@@ -169,7 +169,7 @@ Here is the result, none of them bellow 5% P. value
 p.value of $H_0: \mu= \frac{n-unit}{n-color}$
 
     ##     Red    Blue   Green  Orange  Yellow   Brown 
-    ## "83.0%"  "1.9%"  "9.5%" "13.4%" "57.5%"  "6.2%"
+    ## "88.3%" "86.4%" "77.9%" "37.6%"  "3.4%" "74.9%"
 
 Now I will do the same checking for 2 samples, to see whether there is
 correlation between each 2 colors distribution.
@@ -181,7 +181,7 @@ for each row i and column j
 
 2)  if i!=j, this is two samples test of same expected value hypothesis
 
-![](MnM-sampling-report_files/figure-gfm/P.value%20test-1.png)<!-- -->
+![](MnM-sampling-report_files/figure-gfm/P.value%20test%20res-1.png)<!-- -->
 Now here Is visualization of the actual data per color
 
 ![](MnM-sampling-report_files/figure-gfm/plot%202%20colors-1.png)<!-- -->
@@ -196,7 +196,7 @@ $$f(x) = \frac{1}{\Gamma(\alpha)\theta^\alpha} x^{\alpha-1}e^{-x/\theta}$$
 I can see that the variance distribution is Gamma like with shape and
 rate as seen below
 
-    ## [1] "The parameters of the gamma shaped variance is shape 2.419 and scale 18.462"
+    ## [1] "The parameters of the gamma shaped variance is shape 2.493 and scale 18.637"
 
 ![](MnM-sampling-report_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
@@ -222,11 +222,11 @@ Here is some random rows:
 
 | n_unit | n_color | even_count | even_evens | var_col | all_even | low_color | smallest_col |
 |-------:|--------:|-----------:|-----------:|--------:|---------:|----------:|-------------:|
-|   27.5 |       6 |      0.494 |      0.079 |   4.588 |    0.013 |     0.559 |            0 |
-|  164.8 |       7 |      0.496 |      0.075 |  23.557 |    0.004 |     0.073 |           11 |
-|  274.7 |       7 |      0.505 |      0.070 |  39.655 |    0.012 |     0.028 |           20 |
-|   49.5 |       7 |      0.501 |      0.068 |   7.298 |    0.007 |     0.278 |            0 |
-|   27.5 |       2 |      0.493 |      0.251 |  13.671 |    0.244 |     0.105 |            5 |
+| 1098.9 |       6 |      0.506 |      0.083 | 187.766 |    0.022 |     0.000 |          131 |
+| 1098.9 |       8 |      0.498 |      0.059 | 132.436 |    0.002 |     0.000 |          102 |
+|  274.7 |       6 |      0.503 |      0.085 |  42.115 |    0.018 |     0.008 |           27 |
+|  824.2 |       2 |      0.491 |      0.246 | 389.284 |    0.237 |     0.000 |          369 |
+|   49.5 |       2 |      0.502 |      0.253 |  26.120 |    0.255 |     0.021 |           13 |
 
 Multiple sample example rows
 
@@ -270,22 +270,22 @@ colors.
     ##                             all_even          
     ##                        (1)            (2)     
     ## ----------------------------------------------
-    ## n_color              -18.962        -9.535    
-    ##                     (869.341)      (459.099)  
+    ## n_color              -18.764        -9.437    
+    ##                     (872.970)      (460.847)  
     ##                                               
-    ## n_unit               -0.0001        -0.0001   
+    ## n_unit               -0.0002        -0.0002   
     ##                      (0.0005)      (0.0005)   
     ##                                               
-    ## color_No2                           11.203    
-    ##                                   (2,162.952) 
+    ## color_No2                           11.102    
+    ##                                   (2,169.439) 
     ##                                               
-    ## Constant              36.897         6.842    
-    ##                    (1,738.683)    (2,522.804) 
+    ## Constant              36.356         6.598    
+    ##                    (1,745.940)    (2,530.912) 
     ##                                               
     ## ----------------------------------------------
     ## Observations          2,160          2,160    
-    ## Log Likelihood       -137.104      -137.104   
-    ## Akaike Inf. Crit.    280.209        282.209   
+    ## Log Likelihood       -126.634      -126.634   
+    ## Akaike Inf. Crit.    259.267        261.267   
     ## ==============================================
     ## Note:              *p<0.1; **p<0.05; ***p<0.01
 
@@ -299,22 +299,22 @@ colors to probability of all distinct colors to be even.
     ##                   cbind(n_color, n_color - even_count) 
     ##                          (1)                (2)        
     ## -------------------------------------------------------
-    ## n_color                 -0.005             -0.005      
+    ## n_color                 0.007              0.007       
     ##                        (0.007)            (0.007)      
     ##                                                        
-    ## n_unit                 0.00003            0.00003      
+    ## n_unit                 0.00002            0.00002      
     ##                       (0.00005)          (0.00005)     
     ##                                                        
-    ## color_No2               -0.008                         
+    ## color_No2               -0.003                         
     ##                        (0.031)                         
     ##                                                        
-    ## Constant               0.704***           0.701***     
+    ## Constant               0.635***           0.633***     
     ##                        (0.055)            (0.053)      
     ##                                                        
     ## -------------------------------------------------------
     ## Observations            2,160              2,160       
-    ## Log Likelihood        -3,009.374         -3,009.407    
-    ## Akaike Inf. Crit.     6,026.749          6,024.815     
+    ## Log Likelihood        -3,011.702         -3,011.708    
+    ## Akaike Inf. Crit.     6,031.404          6,029.416     
     ## =======================================================
     ## Note:                       *p<0.1; **p<0.05; ***p<0.01
 
@@ -333,7 +333,7 @@ The simulation created a random samples of snack packs, which was proven
 to be statistically random with known $\mu$ and $\sigma^2$. I created
 one sample with specific size and numbers of colors using “sample_MnM”,
 and costume multiple samples using “mega_snack”. Then, I check the
-relevand indicators fot this project.
+relevant indicators for this project.
 
 I found out that:
 
@@ -351,7 +351,7 @@ suggestion for any random sampler factory (like candies, Lego, toys):
 
 1.  Smaller packages need more diversity check
 
-2.  Althernatively, I would recomand calculate the amount of each type
+2.  alternatively, I would recommend calculate the amount of each type
     in small packages
 
 ### Main Q: Eating M&M by Two
@@ -373,13 +373,13 @@ See all here:
 
 | Colors | All Even Percent |
 |-------:|-----------------:|
-|      2 |            24.62 |
-|      3 |            12.76 |
-|      4 |             6.42 |
-|      5 |             3.17 |
-|      6 |             1.75 |
-|      7 |             0.71 |
-|      8 |             0.44 |
+|      2 |            25.04 |
+|      3 |            12.69 |
+|      4 |             6.16 |
+|      5 |             3.26 |
+|      6 |             1.85 |
+|      7 |             0.90 |
+|      8 |             0.39 |
 
 Probability of All Colors Even by Pack Colors Number
 
@@ -415,6 +415,6 @@ different parameters to be checked in a reusable, structured way.
 You can try to simulate a package and play here:
 
 [the M&M Pack Simulation
-Game](https://yonigr94.github.io/Simulation-application-of-M-M/)
+Game](https://yonigr94.github.io/Simulation-application-of-M-M//)
 
 Have fun!
