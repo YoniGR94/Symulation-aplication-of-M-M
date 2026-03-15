@@ -415,6 +415,6 @@ different parameters to be checked in a reusable, structured way.
 You can try to simulate a package and play here:
 
 [the M&M Pack Simulation
-Game](https://yonigr94.github.io/Symulation-aplication-of-M-M/)
+Game](https://yonigr94.github.io/Simulation-application-of-M-M/)
 
 Have fun!
