@@ -671,6 +671,6 @@ In addition, I created the infrastructure for similar questions with different p
 
 You can try to simulate a package and play here:
 
-[the M&M Pack Simulation Game](https://yonigr94.github.io/Symulation-aplication-of-M-M/)
+[the M&M Pack Simulation Game](https://yonigr94.github.io/Simulation-application-of-M-M//)
 
 Have fun!
